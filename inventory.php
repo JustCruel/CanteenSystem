@@ -98,7 +98,7 @@ include 'sidebar.php'; // Include the sidebar
 }
 
 .table thead th {
-    background-color: #023B87; /* Set header background color */
+    background-color: #023B86; /* Set header background color */
     color: white; /* Set header text color to white */
     font-weight: 700; /* Make header font bold */
 }
