@@ -1,0 +1,65 @@
+/* add_category.css */
+
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa; /* Light background for better contrast */
+}
+
+/* Container styles */
+.container {
+    max-width: 600px; /* Limit the width of the container */
+    margin: 50px auto; /* Center the container */
+    padding: 20px; /* Padding around the content */
+    background-color: #ffffff; /* White background for the form */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Heading styles */
+h2 {
+    margin-bottom: 20px; /* Space below the heading */
+    text-align: center; /* Center the heading */
+    color: #333; /* Darker text color for better readability */
+}
+
+/* Form label styles */
+label {
+    display: block; /* Block display for labels */
+    margin-bottom: 5px; /* Space below labels */
+    color: #555; /* Medium gray text color */
+}
+
+/* Input field styles */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%; /* Full width input fields */
+    padding: 10px; /* Padding inside the input fields */
+    margin-bottom: 20px; /* Space below input fields */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Slightly rounded corners */
+}
+
+/* Button styles */
+button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: #ffffff; /* White text color */
+    padding: 10px 15px; /* Padding inside the button */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Slightly rounded corners */
+    cursor: pointer; /* Change cursor on hover */
+    font-size: 16px; /* Increase font size */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Back button styles */
+.btn-secondary {
+    margin-top: 20px; /* Space above the back button */
+    text-align: center; /* Center the back button */
+}

@@ -1,0 +1,50 @@
+/* styles.css */
+
+/* Body styling */
+body {
+    font-family: 'DM Sans', sans-serif; /* Using the preferred font */
+    background-color: #f8f9fa; /* Light gray background for better contrast */
+}
+
+/* Header styling */
+h1 {
+    margin-bottom: 20px; /* Space below the header */
+}
+
+/* Input group styling */
+.input-group {
+    margin-bottom: 20px; /* Space below the input group */
+}
+
+/* Table styling */
+.table {
+    border-radius: 0.5rem; /* Rounded corners for the table */
+    overflow: hidden; /* Ensure the rounded corners are applied */
+}
+
+/* Table header styling */
+.thead-dark th {
+    background-color: #343a40; /* Dark background for header */
+    color: white; /* White text color for header */
+}
+
+/* Button styling */
+.btn {
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Darker shade on hover for primary button */
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    /* Stack elements on small screens */
+    .input-group {
+        flex-direction: column; /* Change input group direction */
+    }
+
+    .input-group input {
+        margin-bottom: 10px; /* Space below input on small screens */
+    }
+}
