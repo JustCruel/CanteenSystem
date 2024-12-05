@@ -213,6 +213,23 @@ $totalPages = ceil($totalSalesCount / $limit); // Calculate total pages
             margin-top: 20px;
             justify-content: center;
         }
+        table {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    width: 100%; /* Ensure table takes up full width */
+    table-layout: fixed; /* Ensures even column widths */
+}
+
+th, td {
+    padding: 10px; /* Adds space within cells */
+    text-align: center; /* Centers text within each cell */
+    border: 1px solid #ddd; /* Adds border to table cells */
+}
+
+thead {
+    background-color: #f2f2f2; /* Adds a light background for table headers */
+}
+
     </style>
 </head>
 <body>

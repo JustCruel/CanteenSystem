@@ -23,6 +23,56 @@ $sales = [];
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $filter = isset($_GET['filter']) ? $_GET['filter'] : '';
 
+// Base query for total return amount
+$returnBaseQuery = "SELECT SUM(products.selling_price * return_sale.quantity) AS total_return, return_date
+                    FROM return_sale
+                    JOIN products ON return_sale.product_id = products.id";
+
+// Where clause for returns
+$returnWhereClause = "";
+
+// Apply filter based on selected time period for returns
+if (!empty($filter)) {
+    $filterClause = "";
+    switch ($filter) {
+        case 'today':
+            $filterClause = "DATE(return_date) = '$today'";
+            break;
+        case 'week':
+            $filterClause = "return_date BETWEEN '$weekStart' AND '$weekEnd'";
+            break;
+        case 'month':
+            $filterClause = "return_date BETWEEN '$monthStart' AND '$monthEnd'";
+            break;
+        case 'year':
+            $filterClause = "return_date BETWEEN '$yearStart' AND '$yearEnd'";
+            break;
+    }
+    $returnWhereClause .= empty($returnWhereClause) ? " WHERE $filterClause" : " AND $filterClause";
+}
+
+// Combine the base query with where clause for returns
+$returnQuery = $returnBaseQuery . $returnWhereClause . " GROUP BY return_date";
+
+// Execute the query for returns
+$returnResult = $conn->query($returnQuery);
+
+// Initialize return amount to 0
+$totalReturn = 0;
+$returnData = []; // Initialize return data array
+
+if ($returnResult) {
+    while ($row = $returnResult->fetch_assoc()) {
+        $returnData[] = ['date' => $row['return_date'], 'return' => $row['total_return']];
+        // Add return to the total
+        $totalReturn += $row['total_return'];
+    }
+}
+
+// Format the total return amount
+$totalReturnFormatted = number_format($totalReturn, 2);
+
+
 // Base query for total revenue
 $baseQuery = "SELECT SUM(selling_price * quantity_sold) AS total_revenue, sale_date
               FROM sales 
@@ -62,11 +112,16 @@ $revenueQuery = $baseQuery . $whereClause . " GROUP BY sale_date";
 
 // Execute the query
 $revenueResult = $conn->query($revenueQuery);
+
+// Initialize revenue to 0
 $revenue = 0;
-$revenueData = [];
+$revenueData = []; // Initialize revenue data array
+
 if ($revenueResult) {
     while ($row = $revenueResult->fetch_assoc()) {
         $revenueData[] = ['date' => $row['sale_date'], 'revenue' => $row['total_revenue']];
+        // Add revenue to the total
+        $revenue += $row['total_revenue'];
     }
 }
 
@@ -93,6 +148,16 @@ $revenueFormatted = number_format($revenue, 2);
             border-radius: 8px;
             margin: 20px 0;
         }
+        .revenue-card {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .revenue-card h4 {
+            font-size: 1.5rem;
+        }
         .no-sales {
             text-align: center;
             padding: 20px;
@@ -104,69 +169,81 @@ $revenueFormatted = number_format($revenue, 2);
 <body>
 
 <?php include 'sidebar.php'; ?>
-    <div class="main-content">
-        <a href="dashboard.php" class="btn btn-primary">Back to Dashboard</a>
-        <h2>Revenue Report</h2>
+<div class="main-content">
+    <a href="dashboard.php" class="btn btn-primary">Back to Dashboard</a>
+    <h2>Revenue Report</h2>
 
-        <!-- Filter form -->
-        <form id="filterForm" method="GET" class="mb-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <select class="form-control" name="filter" onchange="this.form.submit()">
-                            <option value="">Select Time Period</option>
-                            <option value="today" <?php echo $filter == 'today' ? 'selected' : ''; ?>>Today</option>
-                            <option value="week" <?php echo $filter == 'week' ? 'selected' : ''; ?>>This Week</option>
-                            <option value="month" <?php echo $filter == 'month' ? 'selected' : ''; ?>>This Month</option>
-                            <option value="year" <?php echo $filter == 'year' ? 'selected' : ''; ?>>This Year</option>
-                        </select>
-                    </div>
+    <!-- Filter form -->
+    <form id="filterForm" method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <select class="form-control" name="filter" onchange="this.form.submit()">
+                        <option value="">Select Time Period</option>
+                        <option value="today" <?php echo $filter == 'today' ? 'selected' : ''; ?>>Today</option>
+                        <option value="week" <?php echo $filter == 'week' ? 'selected' : ''; ?>>This Week</option>
+                        <option value="month" <?php echo $filter == 'month' ? 'selected' : ''; ?>>This Month</option>
+                        <option value="year" <?php echo $filter == 'year' ? 'selected' : ''; ?>>This Year</option>
+                    </select>
                 </div>
             </div>
-        </form>
-
-        <!-- Display total revenue -->
-        <div class="alert alert-info">
-            <h4>Total Revenue:</h4>
-            <p>₱<?php echo $revenueFormatted; ?></p>
         </div>
+    </form>
 
-        <!-- ApexCharts for Revenue Graph -->
-        <div id="revenue-chart"></div>
+    <!-- Display total revenue -->
+    <div class="revenue-card">
+        <h4>Total Revenue for <?php echo ucfirst($filter ?: 'all time'); ?>:</h4>
+        <p>₱<?php echo $revenueFormatted; ?></p>
+    </div>
+    <!-- Display total return -->
+<div class="revenue-card">
+    <h4>Total Returns for <?php echo ucfirst($filter ?: 'all time'); ?>:</h4>
+    <p>₱<?php echo $totalReturnFormatted; ?></p>
+</div>
 
-        <script>
-            // Prepare data for ApexCharts
-            var revenueData = <?php echo json_encode($revenueData); ?>;
+    <!-- ApexCharts for Revenue Graph -->
+    <div id="revenue-chart"></div>
 
-            var dates = revenueData.map(function(item) { return item.date; });
-            var revenues = revenueData.map(function(item) { return item.revenue; });
+    <script>
+        // Prepare data for ApexCharts
+        var revenueData = <?php echo json_encode($revenueData); ?>;
 
-            var options = {
-                chart: {
-                    type: 'line',
-                    height: 350
-                },
-                series: [{
-                    name: 'Revenue',
-                    data: revenues
-                }],
-                xaxis: {
-                    categories: dates,
-                    title: {
-                        text: 'Date'
-                    }
-                },
-                yaxis: {
-                    title: {
-                        text: 'Revenue (₱)'
+        var dates = revenueData.map(function(item) { return item.date; });
+        var revenues = revenueData.map(function(item) { return item.revenue; });
+
+        var options = {
+            chart: {
+                type: 'line',
+                height: 350
+            },
+            series: [{
+                name: 'Revenue',
+                data: revenues
+            }],
+            xaxis: {
+                categories: dates,
+                title: {
+                    text: 'Date'
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Revenue (₱)'
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(value) {
+                        return '₱' + value.toFixed(2);
                     }
                 }
-            };
+            }
+        };
 
-            var chart = new ApexCharts(document.querySelector("#revenue-chart"), options);
-            chart.render();
-        </script>
+        var chart = new ApexCharts(document.querySelector("#revenue-chart"), options);
+        chart.render();
+    </script>
 
-    </div>
+</div>
 </body>
 </html>

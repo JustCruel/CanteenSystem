@@ -256,7 +256,7 @@
             <div id="inventorySubmenu" class="submenu">
                 <a href="inventory.php">Inventory</a>
                 <a href="add_product.php">Add Product</a>
-                <a href="suppliers.php">Add Categories</a>
+               
             </div>
         </div>
         <a href="sales_report.php">
