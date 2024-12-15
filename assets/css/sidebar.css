@@ -1,36 +1,229 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     display: flex;
+    margin: 0;
+    background-color: #f4f7fc;
+    height: 100vh;
+    flex-direction: column;
+}
+.container {
+    max-width: 1000px;
+}
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+/* Top bar style */
+.top-bar {
+    
+    background-color: #fafafa;
+    color: #333;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
+    height: 70px;
 }
 
-.sidebar {
-    width: 200px;
-    background-color: #f4f4f4;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+.top-bar h1 {
+margin: 0;
+font-size: 1.5rem;
+font-weight: 600;
+color: #023B87;
+letter-spacing: -0.1em;
+text-align: left;
+margin-left: -16px; /* Use negative margin to shift it left */
 }
+
+/* Hide h1 when sidebar is closed */
+/* Hide h1 when sidebar is closed (on smaller screens) */
+.top-bar h1.open {
+display: none;
+}
+
+
+
+
+.top-bar .logout-btn {
+    color: white;
+    background-color: #005cbf;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.top-bar .logout-btn:hover {
+    background-color: #003366;
+}
+
+/* Sidebar style */
+.sidebar {
+    margin-top: 70px;
+    width: 250px;
+    background-color: #023B87;
+    color: #333;
+    height: 100vh;
+    padding-top: 20px;
+    position: fixed;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    overflow-y: auto;
+    left: -250px;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.hamburger {
+    display: block;
+    font-size: 24px;
+    color: #333;
+    background-color: transparent;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 3;
+    position: fixed;
+    top: 15px;
+    left: 10px;
+    transition: left 0.3s ease;
+}
+
+.hamburger.open {
+    left: 260px;
+}
+.sidebar img {
+width: 180px;  /* Set the width of the image */
+height: 180px;  /* Set the height of the image */
+display: block;
+margin: 0 auto 20px;
+background-color: white;
+padding: 10px;
+border-radius: 50%;  /* Makes the image circular */
+}
+
 
 .sidebar h2 {
-    margin: 0 0 20px;
+    color: #ffffff;
+    font-size: 1.3rem;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.sidebar button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
+.sidebar a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #ffffff;
+    padding: 12px 20px;
+    margin: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
 }
 
-.sidebar button:hover {
-    background-color: #0056b3;
+.sidebar a:hover, .sidebar a.active {
+    background-color: #e6f0ff;
+    color: #007bff;
+    transform: translateX(5px);
+}
+
+.sidebar a i {
+    margin-right: 12px;
+    font-size: 1.2rem;
+    width: 20px;
+    text-align: center;
 }
 
 .main-content {
-    flex: 1;
+    margin-left: 250px;
     padding: 20px;
+    background-color: #ffffff;
+    min-height: 100vh;
+    box-sizing: border-box;
+    margin-top: 70px;
+}
+
+/* Submenu styles */
+.submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 20px;
+    padding-left: 15px;
+    border-left: 2px solid #007bff;
+}
+
+.submenu.open {
+    display: flex;
+}
+
+.submenu a {
+    font-size: 0.9rem;
+    color: #ffffff;
+    padding: 8px 0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.submenu a:hover {
+    color: #007bff;
+}
+
+.submenu-icon {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.inventory-toggle {
+    display: flex;
+    align-items: center;
+}
+
+/* Rotate arrow when submenu opens */
+.submenu.open ~ .inventory-toggle .submenu-icon {
+    transform: rotate(180deg);
+}
+.main-content.sidebar-open {
+    margin-left: 250px; /* Adjust this value to match the sidebar width */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 0;
+        overflow-x: hidden;
+        transition: width 0.3s ease;
+    }
+
+    .sidebar.open {
+        width: 250px;
+    }
+
+    .hamburger {
+        left: 10px;
+    }
+
+    .hamburger.open {
+        left: 260px;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
 }

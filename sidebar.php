@@ -256,6 +256,8 @@
             <div id="inventorySubmenu" class="submenu">
                 <a href="inventory.php">Inventory</a>
                 <a href="add_product.php">Add Product</a>
+                <a href="bulk_upload_products.php">Bulk Upload Product</a>
+               
                
             </div>
         </div>

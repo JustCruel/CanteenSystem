@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $rfidCode = $_POST['rfid_code']; // Get the RFID code from the request
     $userName = ""; // Placeholder for user name
     $userId = null; // Initialize user ID
-    $action = "Activated"; // Action description
+    $action = "Deactivated"; // Action description
 
     // Prepare and execute the statement to fetch user details associated with the RFID code
     $userQuery = $conn->prepare("SELECT id, first_name, middle_name, last_name FROM user WHERE rfid_code = ?");

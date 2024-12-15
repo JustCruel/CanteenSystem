@@ -1,7 +1,6 @@
 <?php
 session_start();
 include 'db.php';
- // Include your database connection
 
 // Determine the current page number
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -13,8 +12,27 @@ $entriesPerPage = 10;
 // Calculate the offset for the SQL query
 $offset = ($page - 1) * $entriesPerPage;
 
-// Get the total number of transactions
-$countQuery = "SELECT COUNT(*) as total FROM transactionslnd";
+// Initialize filter variables
+$nameFilter = isset($_GET['name']) ? $_GET['name'] : '';
+$typeFilter = isset($_GET['type']) ? $_GET['type'] : '';
+$dateFilter = isset($_GET['date']) ? $_GET['date'] : '';
+
+// Build the base query
+$query = "SELECT * FROM transactionslnd WHERE 1=1";
+
+// Add filters to the query
+if (!empty($nameFilter)) {
+    $query .= " AND user_name LIKE '%" . $conn->real_escape_string($nameFilter) . "%'";
+}
+if (!empty($typeFilter)) {
+    $query .= " AND transaction_type = '" . $conn->real_escape_string($typeFilter) . "'";
+}
+if (!empty($dateFilter)) {
+    $query .= " AND DATE(transaction_date) = '" . $conn->real_escape_string($dateFilter) . "'";
+}
+
+// Count the total number of transactions after applying filters
+$countQuery = "SELECT COUNT(*) as total FROM ($query) as filtered";
 $countResult = $conn->query($countQuery);
 $totalEntries = $countResult->fetch_assoc()['total'];
 
@@ -22,7 +40,7 @@ $totalEntries = $countResult->fetch_assoc()['total'];
 $totalPages = ceil($totalEntries / $entriesPerPage);
 
 // Fetch the transactions for the current page
-$query = "SELECT * FROM transactionslnd ORDER BY transaction_date DESC LIMIT $entriesPerPage OFFSET $offset";
+$query .= " ORDER BY transaction_date DESC LIMIT $entriesPerPage OFFSET $offset";
 $result = $conn->query($query);
 ?>
 
@@ -38,12 +56,38 @@ $result = $conn->query($query);
             justify-content: center;
         }
     </style>
+    <script>
+        // Function to submit the form automatically when inputs change
+        function autoSubmit() {
+            document.getElementById('filterForm').submit();
+        }
+    </script>
 </head>
 <body>
 
 <?php include 'sidebarcash.php'; ?>
 <div class="container mt-5">
     <h1 class="text-center">Transaction History</h1>
+
+    <!-- Filter Form -->
+    <form id="filterForm" method="GET" class="mb-4">
+        <div class="form-row">
+            <div class="col">
+                <input type="text" name="name" class="form-control" placeholder="Search by Name" value="<?php echo htmlspecialchars($nameFilter); ?>" oninput="autoSubmit()">
+            </div>
+            <div class="col">
+                <select name="type" class="form-control" onchange="autoSubmit()">
+                    <option value="">All Types</option>
+                    <option value="load" <?php echo $typeFilter == 'load' ? 'selected' : ''; ?>>Load</option>
+                    <option value="deduct" <?php echo $typeFilter == 'deduct' ? 'selected' : ''; ?>>Deduct</option>
+                </select>
+            </div>
+            <div class="col">
+                <input type="date" name="date" class="form-control" value="<?php echo htmlspecialchars($dateFilter); ?>" onchange="autoSubmit()">
+            </div>
+        </div>
+    </form>
+
     <table class="table table-bordered mt-4">
         <thead>
             <tr>
@@ -80,14 +124,14 @@ $result = $conn->query($query);
     <ul class="pagination justify-content-center">
         <!-- First Page Button -->
         <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-            <a class="page-link" href="?page=1" aria-label="First">
+            <a class="page-link" href="?page=1&name=<?= urlencode($nameFilter) ?>&type=<?= urlencode($typeFilter) ?>&date=<?= urlencode($dateFilter) ?>" aria-label="First">
                 <span aria-hidden="true">««</span>
             </a>
         </li>
 
         <!-- Previous Page Button -->
         <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-            <a class="page-link" href="?page=<?= $page - 1 ?>" aria-label="Previous">
+            <a class="page-link" href="?page=<?= $page - 1 ?>&name=<?= urlencode($nameFilter) ?>&type=<?= urlencode($typeFilter) ?>&date=<?= urlencode($dateFilter) ?>" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -99,20 +143,20 @@ $result = $conn->query($query);
         
         for ($i = $start; $i <= $end; $i++): ?>
             <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                <a class="page-link" href="?page=<?= $i ?>&name=<?= urlencode($nameFilter) ?>&type=<?= urlencode($typeFilter) ?>&date=<?= urlencode($dateFilter) ?>"><?= $i ?></a>
             </li>
         <?php endfor; ?>
 
         <!-- Next Page Button -->
         <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
-            <a class="page-link" href="?page=<?= $page + 1 ?>" aria-label="Next">
+            <a class="page-link" href="?page=<?= $page + 1 ?>&name=<?= urlencode($nameFilter) ?>&type=<?= urlencode($typeFilter) ?>&date=<?= urlencode($dateFilter) ?>" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
 
         <!-- Last Page Button -->
         <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
-            <a class="page-link" href="?page=<?= $totalPages ?>" aria-label="Last">
+            <a class="page-link" href="?page=<?= $totalPages ?>&name=<?= urlencode($nameFilter) ?>&type=<?= urlencode($typeFilter) ?>&date=<?= urlencode($dateFilter) ?>" aria-label="Last">
                 <span aria-hidden="true">»»</span>
             </a>
         </li>

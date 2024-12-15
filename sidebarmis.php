@@ -265,6 +265,9 @@
         <a href="disable_card.php">
             <i class="fas fa-file-invoice"></i>Disable RFID/Accounts
         </a>
+        <a href="registeractivate.php">
+            <i class="fas fa-file-invoice"></i>Upload Student/Faculty List
+        </a>
         <a href="rfid_logs.php">
             <i class="fas fa-file-invoice"></i>Activity Logs
         </a>
