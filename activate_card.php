@@ -128,7 +128,7 @@ button:disabled {
                             echo "<td>" . $row["last_name"] . "</td>";
                             echo "<td>" . $row["email"] . "</td>";
                             echo "<td>" . $row["balance"] . "</td>";
-                            echo "<td>" . ($row["is_activated"] == 1 ? 'Activated' : 'Disabled') . "</td>"; // Display status
+                            echo "<td>" . ($row["is_activated"] == 1 ? 'Activated' : 'Deactivated') . "</td>"; // Display status
                             echo "<td>";
                             echo "<button class='btn btn-primary' 
                             data-toggle='modal' 
@@ -181,7 +181,8 @@ button:disabled {
 
 
     <script>
-function showActionModal(rfidCode, studentName, studentId, isActivated, existingRfid) {
+        
+        function showActionModal(rfidCode, studentName, studentId, isActivated) {
     $('#actionModal').modal('show');
 
     // Store the student ID in the button's data attribute for later use
@@ -191,36 +192,87 @@ function showActionModal(rfidCode, studentName, studentId, isActivated, existing
     $('#assignRfidBtn').data('current-rfid', rfidCode); // Store the current RFID code
 
     // Disable buttons based on the account's activation status
-    if (isActivated) {
+    if (isActivated == 1) {
         $('#activateBtn').addClass('disabled-btn').attr('disabled', true); // Disable Activate button
         $('#deactivateBtn').removeClass('disabled-btn').attr('disabled', false); // Enable Deactivate button
-    } else {
+        $('#assignNewRfidBtn').removeClass('disabled-btn').attr('disabled', false); // Enable Assign New RFID button
+    } else if (isActivated == 0) {
         $('#deactivateBtn').addClass('disabled-btn').attr('disabled', true); // Disable Deactivate button
         $('#activateBtn').removeClass('disabled-btn').attr('disabled', false); // Enable Activate button
+        $('#assignNewRfidBtn').addClass('disabled-btn').attr('disabled', true); 
+        $('#activateBtn').addClass('disabled-btn').attr('disabled', true);// Disable Assign New RFID button
+    } else if (isActivated == 2) {
+        $('#deactivateBtn').addClass('disabled-btn').attr('disabled', true); // Disable Deactivate button
+        $('#activateBtn').removeClass('disabled-btn').attr('disabled', false); // Enable Activate button
+        $('#assignNewRfidBtn').addClass('disabled-btn').attr('disabled', true); // Disable Assign New RFID button
     }
 
     // Disable "Assign RFID" button if the user already has an RFID assigned
-    if (existingRfid) {
+    if (rfidCode) {
         $('#assignRfidBtn').addClass('disabled-btn').attr('disabled', true); // Disable Assign RFID button
     } else {
         $('#assignRfidBtn').removeClass('disabled-btn').attr('disabled', false); // Enable Assign RFID button
     }
 
-    // Assign event handlers for each action
+    // Assign event handlers for each action with confirmation
     $('#activateBtn').off('click').on('click', function() {
-        handleAction(rfidCode, 'activate');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to activate this account?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, activate it!',
+            cancelButtonText: 'No, cancel!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleAction(rfidCode, 'activate');
+            }
+        });
     });
 
     $('#deactivateBtn').off('click').on('click', function() {
-        handleAction(rfidCode, 'deactivate');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to Deactivate this account?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Deactivate it!',
+            cancelButtonText: 'No, cancel!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleAction(rfidCode, 'deactivate');
+            }
+        });
     });
 
     $('#assignRfidBtn').off('click').on('click', function() {
-        assignRFID(rfidCode, 'assignRfid');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to assign an RFID to this account?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, assign it!',
+            cancelButtonText: 'No, cancel!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                assignRFID(rfidCode, 'assignRfid');
+            }
+        });
     });
 
     $('#assignNewRfidBtn').off('click').on('click', function() {
-        assignNewRfid(rfidCode, studentId);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to assign a new RFID to this account?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, assign new RFID!',
+            cancelButtonText: 'No, cancel!'
+ }).then((result) => {
+            if (result.isConfirmed) {
+                assignNewRfid(rfidCode, studentId);
+            }
+        });
     });
 }
 

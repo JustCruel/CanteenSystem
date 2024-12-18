@@ -18,7 +18,7 @@ $role = isset($_SESSION['user_type']) ? $_SESSION['user_type'] : '';
 <body>
     <script>
         // Pass the role from PHP to JavaScript
-        var userRole = "<?php echo $role; ?>";
+        var userRole = "<?php echo htmlspecialchars($role, ENT_QUOTES, 'UTF-8'); ?>";
 
         // SweetAlert confirmation for logout
         Swal.fire({
@@ -36,19 +36,22 @@ $role = isset($_SESSION['user_type']) ? $_SESSION['user_type'] : '';
                 window.location.href = 'logout.php?action=confirm';
             } else {
                 // If canceled, check user role and redirect accordingly
-                if (userRole === 'cstaff') {
-                // Redirect to POS page for cstaff
-                window.location.href = 'pos.php';
-            } else if (userRole === 'cmanager') {
-                // Redirect to dashboard for cmanager
-                window.location.href = 'inventory.php';
-            } else if (userRole === 'cashier') {
-                // Redirect to cashier dashboard for cashier
-                window.location.href = 'cashierdashboard.php';
-            } else if (userRole === 'users') {
-                // Redirect to users dashboard for users
-                window.location.href = 'usersdashboard.php';
-            }
+                switch (userRole) {
+                    case 'cstaff':
+                        window.location.href = 'pos.php';
+                        break;
+                    case 'cmanager':
+                        window.location.href = 'inventory.php';
+                        break;
+                    case 'cashier':
+                        window.location.href = 'cashierdashboard.php';
+                        break;
+                    case 'users':
+                        window.location.href = 'usersdashboard.php';
+                        break;
+                    default:
+                        window.location.href = 'default_dashboard.php'; // Fallback if role is unknown
+                }
             }
         });
     </script>
@@ -57,7 +60,7 @@ $role = isset($_SESSION['user_type']) ? $_SESSION['user_type'] : '';
 
 <?php
 // Process the session destruction only when the user confirms the logout
-if (isset($_GET['action']) && $_GET['action'] == 'confirm') {
+if (isset($_GET['action']) && $_GET['action'] === 'confirm') {
     session_unset(); // Remove all session variables
     session_destroy(); // Destroy the session
     header('Location: login.php'); // Redirect to login page

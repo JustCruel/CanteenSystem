@@ -203,7 +203,7 @@ if (!isset($_SESSION['user_id'])) {
                 
             <input type="text" id="rfid-input" class="form-control mt-3" placeholder="Scan RFID" />
         </div>
-        <button class="btn btn-warning mt-3" onclick="openReturnSaleModal()">Return Sale</button>
+        <!-- <button class="btn btn-warning mt-3" onclick="openReturnSaleModal()">Return Sale</button> -->
                 </div>
             </div>
         </div>

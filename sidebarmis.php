@@ -252,19 +252,16 @@
             <i class="fas fa-tachometer-alt"></i> Activate RFID/Accounts
         </a>
         <!-- Inventory with Submenu -->
-       <!-- <div class="menu-item">
+       <div class="menu-item">
             <a href="#inventorySubmenu" class="inventory-toggle" onclick="toggleSubmenu()">
-                <i class="fas fa-cogs"></i> Inventory <i class="fas fa-chevron-down submenu-icon"></i>
+                <i class="fas fa-cogs"></i> Register <i class="fas fa-chevron-down submenu-icon"></i>
             </a> 
             <div id="inventorySubmenu" class="submenu">
-                <a href="cashierdashboard.php">Dashboard</a>
-                <a href="usersload.php">Load RFID</a>
-                <a href="transaction_history.php">Transaction History</a>
+            <a href="soloregister.php">Register</a>
+            <a href="registeractivate.php">Bulk Register</a>
             </div>
-        </div> -->
-        <a href="disable_card.php">
-            <i class="fas fa-file-invoice"></i>Disable RFID/Accounts
-        </a>
+        </div> 
+      
         <a href="registeractivate.php">
             <i class="fas fa-file-invoice"></i>Upload Student/Faculty List
         </a>

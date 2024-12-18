@@ -46,9 +46,6 @@
                 <a href="transaction_history.php">Transaction History</a>
             </div>
         </div> -->
-        <a href="disable_card.php">
-            <i class="fas fa-file-invoice"></i>Disable RFID/Accounts
-        </a>
         <a href="registeractivate.php">
             <i class="fas fa-file-invoice"></i>Upload Student/Faculty List
         </a>

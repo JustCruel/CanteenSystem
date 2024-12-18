@@ -243,10 +243,110 @@
                 height: 50px;
             }
         }
+           /* Existing Styles here... */
+
+           .vision-mission {
+        width: 90%;
+        max-width: 1000px;
+        margin: 50px auto;
+        padding: 40px;
+        background: linear-gradient(135deg, rgba(64, 224, 208, 0.8), rgba(75, 0, 130, 0.6), rgba(255, 20, 147, 0.6)); 
+        color: white;
+        text-align: center;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        line-height: 1.8;
+        font-size: 18px;
+        backdrop-filter: blur(5px);
+    }
+
+    .vision-mission h2 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 28px;
+        margin-bottom: 15px;
+        color: white; /* White color for headings */
+        text-transform: uppercase;
+    }
+
+    .vision-mission p {
+    color: white; /* Text color set to white */
+    font-size: 18px; /* Font size for readability */
+    line-height: 1.8; /* Adjusts line spacing for better readability */
+    margin-bottom: 20px; /* Adds spacing between paragraphs */
+    text-align: center; /* Center aligns the text */
+}
+
+
+    @media (max-width: 768px) {
+        .vision-mission {
+            padding: 30px;
+            font-size: 16px;
+        }
+
+        .vision-mission h2 {
+            font-size: 24px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .vision-mission {
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .vision-mission h2 {
+            font-size: 20px;
+        }
+    }
+
+        .scroll-down {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .scroll-down a {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .scroll-down a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .logo {
+    width: 50px; /* Adjust the size of the logo */
+    height: auto;
+    margin-right: 20px; /* Space between logo and login button */
+}
+
     </style>
 </head>
 <body>
-    <div class="navbar">
+<div class="navbar">
+    <img src="assets/images/logo.png" alt="Logo" class="logo">
+    <a href="login.php" class="login-button">Log In</a>
+</div>
+
+<div class="navbar">
         <a href="login.php" class="login-button">Log In</a>
     </div>
     <div class="main-message">Welcome To Canteen Management System</div>
@@ -266,5 +366,40 @@
             <p>Comprehensive Reports</p>
         </div>
     </div>
+
+   <!-- Scroll Down Section -->
+   <div class="scroll-down">
+        <a href="javascript:void(0)" id="toggleButton">Vision & Mission</a>
+    </div>
+
+
+    <div id="vision-mission" class="vision-mission">
+    <h2>Vision</h2>
+    <p>
+        To be a pioneering canteen management system that delivers exceptional customer satisfaction and seamless transactions for Holy Cross College Sta. Rosa N.E. Inc.
+    </p>
+    <h2>Mission</h2>
+    <p>
+        To provide innovative and efficient solutions that enhance the canteen experience through fast payments, real-time inventory management, and comprehensive reports. We aim to foster a collaborative and user-friendly environment for students, staff, and the entire school community.
+    </p>
+</div>
+
+    <script>
+        // JavaScript to toggle the Vision and Mission section
+        const toggleButton = document.getElementById('toggleButton');
+        const visionMission = document.getElementById('vision-mission');
+
+        toggleButton.addEventListener('click', () => {
+            // Toggle the display of the Vision and Mission section
+            if (visionMission.style.display === 'none' || visionMission.style.display === '') {
+                visionMission.style.display = 'block';
+                toggleButton.textContent = 'Hide Vision & Mission'; // Update button text
+                visionMission.scrollIntoView({ behavior: 'smooth' }); // Smooth scroll to section
+            } else {
+                visionMission.style.display = 'none';
+                toggleButton.textContent = 'Vision & Mission'; // Reset button text
+            }
+        });
+    </script>
 </body>
 </html>
