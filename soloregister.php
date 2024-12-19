@@ -74,10 +74,22 @@ $conn->close();
 <div class="container mt-5">
     <h2 class="text-center">Register Student Manually</h2>
     <form action="" method="post" onsubmit="return confirmRegistration();">
-        <div class="mb-3">
-            <label for="student_id" class="form-label">Student ID</label>
-            <input type="text" class="form-control" id="student_id" name="student_id" required>
-        </div>
+    <div class="mb-3">
+    <label for="student_id" class="form-label">Student ID</label>
+    <input type="text" class="form-control" id="student_id" name="student_id" required maxlength="9" pattern="\d{9}" title="Student ID must be exactly 9 digits">
+</div>
+
+<script>
+    // Prevent non-numeric characters from being entered
+    document.getElementById('student_id').addEventListener('input', function (e) {
+        let value = e.target.value;
+        
+        // Remove any non-digit character
+        e.target.value = value.replace(/\D/g, '').slice(0, 9); // Keep only digits and limit to 9 characters
+    });
+</script>
+
+
         <div class="mb-3">
             <label for="first_name" class="form-label">First Name</label>
             <input type="text" class="form-control" id="first_name" name="first_name" required>

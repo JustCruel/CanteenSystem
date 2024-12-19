@@ -50,7 +50,7 @@ $role = isset($_SESSION['user_type']) ? $_SESSION['user_type'] : '';
                         window.location.href = 'usersdashboard.php';
                         break;
                     default:
-                        window.location.href = 'default_dashboard.php'; // Fallback if role is unknown
+                        window.location.href = 'misdashboard.php'; // Fallback if role is unknown
                 }
             }
         });

@@ -1,7 +1,16 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 include "db.php";
 include "sidebarcash.php";
 
+$first_name = $_SESSION['first_name'];
+$middle_name = $_SESSION['middle_name'];
+$last_name = $_SESSION['last_name'];
+var_dump($first_name,$middle_name,$last_name);
 // Aggregate totals for loading and deductions
 $queryLoad = "SELECT SUM(amount) as total_load, DATE(transaction_date) as transaction_date 
               FROM transactionslnd 

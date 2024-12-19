@@ -48,16 +48,10 @@ $disabledCount = $statusCounts[2];
 
 <div class="container mt-5">
     <header class="bg-primary text-white p-4 rounded d-flex justify-content-between align-items-center">
-        <h1 class="m-0">Cashier Dashboard</h1>
+        <h1 class="m-0">MIS DASHBOARD</h1>
         <div class="dropdown">
             <a href="#" class="text-white" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-toggle="tooltip" data-placement="top" title="Profile Settings">
-                <i class="fas fa-user-cog"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-                <a class="dropdown-item" href="#"><i class="fas fa-user"></i> User Profile</a>
-                <a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt"></i> Log Out</a>
-            </div>
-        </div>
+              
     </header>
 
     <main class="mt-4">

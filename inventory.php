@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'], $_POST[
     } else {
         $_SESSION['error_message'] = "Failed to replenish product.";
     }
-    header("Location: replenish.php");
+    header("Location: inventory.php");
     exit();
 }
 
@@ -233,28 +233,36 @@ include 'sidebar.php'; // Include the sidebar
                     </td>
                 </tr>
                 <div class="modal fade" id="replenishModal<?php echo $product['id']; ?>" tabindex="-1" aria-labelledby="replenishModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="replenishModalLabel">Replenish Product - <?php echo htmlspecialchars($product['name']); ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <form method="POST" action="">
-                                <div class="modal-body">
-                                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                                    <div class="mb-3">
-                                        <label for="replenishQuantity<?php echo $product['id']; ?>" class="form-label">Quantity to Replenish</label>
-                                        <input type="number" class="form-control" id="replenishQuantity<?php echo $product['id']; ?>" name="replenish_quantity" min="1" required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Replenish</button>
-                                </div>
-                            </form>
-                        </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="replenishModalLabel">Replenish Product - <?php echo htmlspecialchars($product['name']); ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="" id="replenishForm<?php echo $product['id']; ?>">
+                <div class="modal-body">
+                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                    <!-- Add the product name field -->
+                    <input type="hidden" id="product_name<?php echo $product['id']; ?>" value="<?php echo htmlspecialchars($product['name']); ?>">
+                    <div class="mb-3">
+                        <label for="replenishQuantity<?php echo $product['id']; ?>" class="form-label">Quantity to Replenish</label>
+                        <input type="number" class="form-control" id="replenishQuantity<?php echo $product['id']; ?>" name="replenish_quantity" min="1" required>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success btn-sm btn-replenish" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#replenishModal<?php echo $product['id']; ?>"
+                        data-form-id="replenishForm<?php echo $product['id']; ?>">
+                        Replenish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
                 <?php endforeach; ?>
             </tbody>
         </table>
@@ -283,37 +291,38 @@ include 'sidebar.php'; // Include the sidebar
 });
 
 
+function confirmReplenish(event, formId) {
+    event.preventDefault(); // Prevent form submission
+    const productId = formId.replace('replenishForm', ''); // Extract product ID from form ID
+    const productName = document.getElementById('product_name' + productId).value;
+    const replenishQuantity = document.getElementById('replenishQuantity' + productId).value;
 
-        document.querySelectorAll('.replenish-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const productId = this.getAttribute('data-id');
-            const productName = this.getAttribute('data-name');
-            document.getElementById('product_id').value = productId;
-            document.getElementById('product_name').value = productName;
-            new bootstrap.Modal(document.getElementById('replenishModal')).show();
-        });
+    Swal.fire({
+        title: `Confirm Replenishment`,
+        text: `Are you sure you want to add ${replenishQuantity} units to ${productName}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, replenish it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If confirmed, submit the form
+            document.getElementById(formId).submit();
+        }
     });
-    document.getElementById('replenishForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Prevent the default form submission
+}
 
-        const productName = document.getElementById('product_name').value;
-        const replenishQuantity = document.getElementById('replenish_quantity').value;
-
-        Swal.fire({
-            title: `Confirm Replenishment`,
-            text: `Are you sure you want to add ${replenishQuantity} units to ${productName}?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, replenish it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Submit the form if confirmed
-                this.submit();
-            }
-        });
+// Bind the confirmation to each replenish button dynamically
+document.querySelectorAll('.btn-replenish').forEach((button) => {
+    button.addEventListener('click', function(event) {
+        // Get the corresponding form ID for this button
+        const formId = button.getAttribute('data-form-id');
+        confirmReplenish(event, formId);
     });
+});
+
+   
 </script>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -327,7 +336,7 @@ include 'sidebar.php'; // Include the sidebar
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = 'replenish.php'; // Redirect after OK
+                window.location.href = 'inventory.php'; // Redirect after OK
             }
         });
     </script>

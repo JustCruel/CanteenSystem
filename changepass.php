@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "canteenms";  // Replace with your actual database name
+$dbname = "canteenms";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -13,49 +13,52 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-session_start();  // Assuming user session is already started for logged-in users
+session_start();
 
-// Fetch user details from session or use a parameter for the email (student_id)
-$student_id = $_SESSION['email'];  // Assuming the email is stored in session
+// Fetch user details from session
+$student_id = $_SESSION['email']; 
 
-// Initialize variables for messages and alert type
 $alert_type = '';
 $message = '';
 
-// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $current_password = $_POST['current_password'];
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Input validation
     if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
         $message = "All fields are required!";
+        $alert_type = 'error';
+    } elseif (!preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $new_password)) {
+        $message = "Password must be at least 8 characters long, include uppercase, lowercase, a number, and a special character!";
         $alert_type = 'error';
     } elseif ($new_password !== $confirm_password) {
         $message = "New passwords do not match!";
         $alert_type = 'error';
     } else {
-        // Check if the current password is correct
-        $sql = "SELECT password FROM user WHERE email = '$student_id'";
-        $result = $conn->query($sql);
-        
+        $sql = "SELECT password FROM user WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             if (password_verify($current_password, $row['password'])) {
-                // Hash new password
                 $new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+                $update_sql = "UPDATE user SET password = ? WHERE email = ?";
+                $update_stmt = $conn->prepare($update_sql);
+                $update_stmt->bind_param("ss", $new_hashed_password, $student_id);
 
-                // Update the password
-                $update_sql = "UPDATE user SET password = '$new_hashed_password' WHERE email = '$student_id'";
-
-                if ($conn->query($update_sql) === TRUE) {
+                if ($update_stmt->execute()) {
                     $message = "Password updated successfully!";
                     $alert_type = 'success';
                 } else {
                     $message = "Error updating password: " . $conn->error;
                     $alert_type = 'error';
                 }
+
+                $update_stmt->close();
             } else {
                 $message = "Current password is incorrect!";
                 $alert_type = 'error';
@@ -64,6 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $message = "User not found!";
             $alert_type = 'error';
         }
+        $stmt->close();
     }
 }
 
@@ -76,51 +80,68 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Password</title>
-    <!-- Bootstrap 4 CDN -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <!-- SweetAlert 2 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.6/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
         <h2>Update Password</h2>
-        
-        <!-- Form -->
-        <form action="" method="POST">
+        <form action="changepass.php" method="POST">
             <div class="form-group">
+                <a href="ereceipt.php" class="btn btn-secondary">Back to E-Receipt</a>
+            </div>
+            <div class="form-group password-container">
                 <label for="current_password">Current Password</label>
                 <input type="password" class="form-control" id="current_password" name="current_password" required>
+                <span class="toggle-password" onclick="togglePassword('current_password')">👁️</span>
             </div>
-            
-            <div class="form-group">
+
+            <div class="form-group password-container">
                 <label for="new_password">New Password</label>
                 <input type="password" class="form-control" id="new_password" name="new_password" required>
+                <span class="toggle-password" onclick="togglePassword('new_password')">👁️</span>
             </div>
-            
-            <div class="form-group">
+
+            <div class="form-group password-container">
                 <label for="confirm_password">Confirm New Password</label>
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                <span class="toggle-password" onclick="togglePassword('confirm_password')">👁️</span>
             </div>
-            
+
             <button type="submit" class="btn btn-primary">Update Password</button>
         </form>
     </div>
 
-    <!-- SweetAlert 2 JS (Place this at the end of the body) -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.6/dist/sweetalert2.all.min.js"></script>
-
     <script>
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+        }
+
         <?php if (!empty($message)): ?>
             Swal.fire({
                 icon: '<?php echo $alert_type; ?>',
                 title: '<?php echo $alert_type === "error" ? "Oops..." : "Success!"; ?>',
                 text: '<?php echo $message; ?>',
-                showConfirmButton: true,
-                <?php if ($alert_type === 'success') echo 'timer: 1500,'; ?>
+                showConfirmButton: true
             }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location = 'usersdashboard.php'; // Redirect to registeractivate.php
+                if (result.isConfirmed && '<?php echo $alert_type; ?>' === 'success') {
+                    window.location = 'usersdashboard.php';
                 }
             });
         <?php endif; ?>

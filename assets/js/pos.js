@@ -456,7 +456,7 @@ function completeSaleWithCash() {
                 <ul>${cartItems}</ul>
                 <strong>Total Amount:₱${totalAmount}</strong> 
                 <div style="margin-top: 10px;">
-                    <label for="cash-input">Enter Cash Amountttt:</label>
+                    <label for="cash-input">Enter Cash Amount:</label>
                     <input type="number" id="cash-input" class="swal2-input" placeholder="Cash Amount" />
                 </div>
                 <div id="change-message" style="margin-top: 10px;"></div>
@@ -495,7 +495,7 @@ function completeSaleWithCash() {
                 cashAmount: cashAmount, // Include cash amount
                 change: change.toFixed(2) // Include change
             });
-
+            
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'confirm_sale.php', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -505,7 +505,16 @@ function completeSaleWithCash() {
                     if (response.success) {
                         Swal.fire({
                             title: 'Transaction Details',
-                            html: "<br>Cash: ₱" + cashAmount  + "<br>Change: ₱" + change.toFixed(2) + "<br>Total amount: ₱" + totalAmount,
+                            html: `
+                                <div>
+                                    <strong>Selected Products:</strong>
+                                    <ul>${cartItems}</ul>
+                                    <br>Cash: ₱${cashAmount}
+                                    <br>Total Amount: ₱${totalAmount}
+                                    <br>Change: ₱${change.toFixed(2)}
+                                    <br>Transaction Number: ${response.transaction_number} <!-- Display transaction number -->
+                                </div>
+                            `,
                             icon: 'info',
                             confirmButtonText: 'OK'
                         }).then(() => {
@@ -516,12 +525,19 @@ function completeSaleWithCash() {
                             xhrPrint.onload = function() {
                                 if (this.status === 200) {
                                     console.log("Receipt printed successfully!");
+                                    location.reload();
                                 } else {
                                     console.error("Failed to print receipt.");
                                 }
                             };
-                            xhrPrint.send(saleData); // Send the sale data for receipt printing
-                            location.reload(); // Refresh the page after confirmation
+                            // Send the sale data for receipt printing
+                            xhrPrint.send(JSON.stringify({
+                                items: cart,
+                                totalAmount: totalAmount,
+                                cashAmount: cashAmount,
+                                change: change,
+                                transaction_number: response.transaction_number // Include transaction number
+                            }));
                         });
                         cart = []; // Clear the cart after confirming
                         renderCart();
@@ -546,8 +562,9 @@ function completeSaleWithCash() {
     });
 }
 
-// Complete sale with RFID
+// Update `completeSale` Function
 function completeSale(rfid) {
+    const cartItems = cart.map(item => `<li>${item.name} - Price:₱${item.price}, Quantity: ${item.quantity}</li>`).join('');
     const saleData = JSON.stringify({ items: cart, rfid: rfid }); // Changed from cart to items
 
     const xhr = new XMLHttpRequest();
@@ -560,7 +577,14 @@ function completeSale(rfid) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Sale Confirmed!',
-                    text: "Total amount: " + document.getElementById('total-amount').innerText.split(' ')[1],
+                    html: `
+                        <div>
+                            <strong>Selected Products:</strong>
+                            <ul>${cartItems}</ul>
+                            <br>Total amount: ${document.getElementById('total-amount').innerText.split(' ')[1]}
+                            <br>Transaction Number: ${response.transaction_number} <!-- Display transaction number -->
+                        </div>
+                    `,
                 }).then(() => {
                     // Clear the RFID input field after successful sale
                     document.getElementById('rfid-input').value = ''; 
@@ -585,25 +609,33 @@ function completeSale(rfid) {
                     };
                     xhrPrint.send(JSON.stringify(receiptData)); // Send the receipt data to print
 
-                    location.reload(); // Refresh the page after confirmation
+                   location.reload(); // Refresh the page after confirmation
                 });
 
                 cart = []; // Clear the cart after confirming
                 renderCart();
                 calculateTotal(); // Reset total
             } else {
+                cart = [];
                 Swal.fire({
                     icon: 'error',
                     title: 'Error confirming sale',
                     text: response.message,
+                }).then(() => {
+                    location.reload();
                 });
+                
             }
         } else {
+            cart = [];
             Swal.fire({
                 icon: 'error',
-                title: 'Error processing sale',
-                text: 'Please try again.',
+                title: 'Error confirming sale',
+                text: response.message,
+            }).then(() => {
+                location.reload();
             });
+            
         }
     };
     xhr.send(saleData); // Send the sale data to confirm sale
@@ -635,6 +667,7 @@ console.log("Response from confirm_sale.php:", this.responseText);document.addEv
             }).then((result) => {
                 if (result.isConfirmed) {
                     cancelOrder(); // If confirmed, call the cancelOrder function
+                    location.reload();
                 }
             });
         }

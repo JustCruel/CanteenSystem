@@ -132,18 +132,17 @@ button[type="submit"]:hover, .btn.btn-primary:hover {
 
 </style>
 <div class="main-content">
-<a href="inventory.php" class="btn btn-secondary">Back to Inventory</a>
+    <a href="inventory.php" class="btn btn-secondary">Back to Inventory</a>
     <h2>Add New Product</h2>
     <form id="productForm" method="POST" enctype="multipart/form-data">
-    <label for="barcode">Barcode:</label>
-<input type="text" name="barcode" id="barcode" required>
-
+        <label for="barcode">Barcode:</label>
+        <input type="text" name="barcode" id="barcode" required>
 
         <label for="name">Product Name:</label>
         <input type="text" name="name" id="productName" required>
         
         <label for="market_price">Market Price:</label>
-        <input type="number" step="1" name="market_price"  id="market_price" value="1" required>
+        <input type="number" step="1" name="market_price" id="market_price" value="1" required>
         
         <label for="selling_price">Selling Price:</label>
         <input type="number" step="1" name="selling_price" id="selling_price" value="1" required>
@@ -152,8 +151,7 @@ button[type="submit"]:hover, .btn.btn-primary:hover {
         <input type="number" name="quantity" value="1" required>
         
         <label for="expiry">Expiry Date:</label>
-<input type="date" name="expiry" id="expiry" required min="<?php echo date('Y-m-d'); ?>">
-
+        <input type="date" name="expiry" id="expiry" required min="<?php echo date('Y-m-d'); ?>">
 
         <label for="category">Category:</label>
         <select name="category" id="categorySelect" required>
@@ -165,17 +163,17 @@ button[type="submit"]:hover, .btn.btn-primary:hover {
             <?php endforeach; ?>
             <option value="add_new">Add New Category</option>
         </select>
-        
+
         <label for="new_category_name" id="newCategoryLabel" style="display:none;">New Category Name:</label>
         <input type="text" name="new_category_name" id="newCategoryName" style="display:none;">
-
+        
         <label for="image">Upload Product Image:</label>
         <input type="file" name="image" accept="image/*" required>
         
-        <button type="submit" class="btn btn-primary">Add Product</button>
-        
+        <button type="submit" class="btn btn-primary" id="submitButton">Add Product</button>
     </form>
 
+            </div>
     <script>
         // Show confirmation dialog before form submission
         document.getElementById('productForm').addEventListener('submit', function(event) {
@@ -282,76 +280,101 @@ document.getElementById('barcode').addEventListener('input', function() {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    const sellingPriceInput = document.getElementById('selling_price');
-    const marketPriceInput = document.getElementById('market_price');
-    let alertShown = false; // Flag to track if the alert has been shown
+            const sellingPriceInput = document.getElementById('selling_price');
+            const marketPriceInput = document.getElementById('market_price');
+            const submitButton = document.getElementById('submitButton');
+            let alertShown = false; // Flag to track if the message has been shown
 
-    if (sellingPriceInput && marketPriceInput) {
-        // Check when the input loses focus
-        sellingPriceInput.addEventListener('blur', function() {
-            const selling_price = parseFloat(this.value); // Parse the selling price as a float
-            const market_price = parseFloat(marketPriceInput.value); // Get the market price value
+            if (sellingPriceInput && marketPriceInput) {
+                // Function to disable the submit button
+                function disableSubmitButton() {
+                    submitButton.disabled = true;
+                }
 
-            // Check if selling price is less than market price
-            if (selling_price < market_price && !alertShown) {
-                alertShown = true; // Set flag to true when alert is shown
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning',
-                    text: 'Selling price cannot be less than the market price!',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    // Reset the flag when the alert is closed
-                    alertShown = false;
-                    sellingPriceInput.focus(); // Refocus on selling price input
-                });
-            } 
-            // Check if selling price is equal to market price
-            else if (selling_price === market_price && !alertShown) {
-                alertShown = true; // Set flag to true when alert is shown
-                Swal.fire({
-                    icon: 'info', // Use info icon for equal case
-                    title: 'Notice',
-                    text: 'Selling price is equal to the market price!',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    // Reset the flag when the alert is closed
-                    alertShown = false;
-                    sellingPriceInput.focus(); // Refocus on selling price input
-                });
-            }
-        });
-    } else {
-        console.error("Element(s) not found");
-    }
-});
+                // Function to enable the submit button
+                function enableSubmitButton() {
+                    submitButton.disabled = false;
+                }
 
+                // Check when the input loses focus
+                sellingPriceInput.addEventListener('blur', function() {
+                    const selling_price = parseFloat(this.value); // Parse the selling price as a float
+                    const market_price = parseFloat(marketPriceInput.value); // Get the market price value
 
-
-          // Check for existing product as user types
-          document.getElementById('productName').addEventListener('input', function() {
-            const productName = this.value;
-
-            // Perform AJAX request to check if the product exists
-            if (productName.length > 0) {
-                fetch('check_product.php?name=' + encodeURIComponent(productName))
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exists) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Product Exists',
-                                text: 'The product "' + productName + '" already exists!',
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'OK'
-                            });
-                        }
+                    // Remove any existing message spans
+                    const existingMessages = document.querySelectorAll('.price-message');
+                    existingMessages.forEach(function(message) {
+                        message.remove();
                     });
+
+                    // Create a new span element for the message
+                    const messageSpan = document.createElement('span');
+                    messageSpan.classList.add('price-message'); // Add a class for styling purposes
+                    messageSpan.style.color = 'red'; // Style the message span (optional)
+
+                    // Check if selling price is less than market price
+                    if (selling_price < market_price) {
+                        messageSpan.textContent = 'Selling price cannot be less than the market price!';
+                        marketPriceInput.insertAdjacentElement('afterend', messageSpan); // Add message after market price
+                        sellingPriceInput.insertAdjacentElement('afterend', messageSpan.cloneNode(true)); // Duplicate message below selling price
+                        disableSubmitButton(); // Disable the button when an error is shown
+                    } 
+                    // Check if selling price is equal to market price
+                    else if (selling_price === market_price) {
+                        messageSpan.textContent = 'Selling price is equal to the market price!';
+                        marketPriceInput.insertAdjacentElement('afterend', messageSpan); // Add message after market price
+                        sellingPriceInput.insertAdjacentElement('afterend', messageSpan.cloneNode(true)); // Duplicate message below selling price
+                        disableSubmitButton(); // Disable the button when a message is shown
+                    } else {
+                        enableSubmitButton(); // Enable the button if there are no errors
+                    }
+                });
+
+                // Enable the button on input change to remove any error
+                sellingPriceInput.addEventListener('input', function() {
+                    const selling_price = parseFloat(this.value); 
+                    const market_price = parseFloat(marketPriceInput.value);
+                    if (selling_price >= market_price) {
+                        enableSubmitButton(); // Enable button when prices are valid
+                    }
+                });
+
+                marketPriceInput.addEventListener('blur', function() {
+                    const selling_price = parseFloat(sellingPriceInput.value);
+                    const market_price = parseFloat(this.value);
+
+                    // Remove any existing message spans
+                    const existingMessages = document.querySelectorAll('.price-message');
+                    existingMessages.forEach(function(message) {
+                        message.remove();
+                    });
+
+                    // Create a new span element for the message
+                    const messageSpan = document.createElement('span');
+                    messageSpan.classList.add('price-message'); // Add a class for styling purposes
+                    messageSpan.style.color = 'red'; // Style the message span (optional)
+
+                    // Check if selling price is less than market price
+                    if (selling_price < market_price) {
+                        messageSpan.textContent = 'Selling price cannot be less than the market price!';
+                        marketPriceInput.insertAdjacentElement('afterend', messageSpan); // Add message after market price
+                        sellingPriceInput.insertAdjacentElement('afterend', messageSpan.cloneNode(true)); // Duplicate message below selling price
+                        disableSubmitButton(); // Disable the button when an error is shown
+                    } 
+                    // Check if selling price is equal to market price
+                    else if (selling_price === market_price) {
+                        messageSpan.textContent = 'Selling price is equal to the market price!';
+                        marketPriceInput.insertAdjacentElement('afterend', messageSpan); // Add message after market price
+                        sellingPriceInput.insertAdjacentElement('afterend', messageSpan.cloneNode(true)); // Duplicate message below selling price
+                        disableSubmitButton(); // Disable the button when a message is shown
+                    } else {
+                        enableSubmitButton(); // Enable the button if there are no errors
+                    }
+                });
+            } else {
+                console.error("Element(s) not found");
             }
         });
-
         document.getElementById('newCategoryName').addEventListener('input', function() {
             const newCategoryName = this.value;
 
@@ -373,4 +396,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     </script>
-</div>
+

@@ -6,6 +6,10 @@ $response = ['success' => false, 'error' => null];
 
 // Check if the request is POST and handle the RFID input
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $first_name = $_SESSION['first_name'];
+$middle_name = $_SESSION['middle_name'];
+$last_name = $_SESSION['last_name'];
+$fullname = $first_name . " " . $middle_name . " " . $last_name;
     // Check if the required fields are set
     if (isset($_POST['rfid']) && isset($_POST['amount']) && isset($_POST['action'])) {
         $rfid_code = trim($_POST['rfid']);
@@ -51,10 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Execute the update query
             if ($update_stmt->execute()) {
                 // Record the transaction
-                $transaction_stmt = $conn->prepare("INSERT INTO transactionslnd (rfid_code, user_name, transaction_type, amount) VALUES (?, ?, ?, ?)");
+                $transaction_stmt = $conn->prepare("INSERT INTO transactionslnd (rfid_code, user_name, transaction_type, amount, cashier) VALUES (?, ?, ?, ?,?)");
                 $user_name = $user['first_name'] . ' ' . $user['last_name']; 
                 $transaction_type = $action == 'load' ? 'load' : 'deduct';
-                $transaction_stmt->bind_param("sssd", $rfid_code, $user_name, $transaction_type, $amount);
+                $transaction_stmt->bind_param("sssds", $rfid_code, $user_name, $transaction_type, $amount,$fullname);
                 
                 if ($transaction_stmt->execute()) {
                     $response['success'] = "Balance successfully " . ($action == 'load' ? 'loaded' : 'deducted') . " P" . number_format($amount, 2);
