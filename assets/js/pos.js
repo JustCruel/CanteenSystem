@@ -354,6 +354,15 @@ function decreaseQuantity(id) {
       // Confirm Sale
 // Confirm Salefunction 
 function confirmSale() {
+    if (rfidInput === '0') {
+        Swal.fire({
+            title: 'Alert!',
+            text: 'RFID is not activated. Please activate RFID to proceed.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return; // Stop further processing
+    }
     if (cart.length === 0) {
         Swal.fire({
             icon: 'warning',
