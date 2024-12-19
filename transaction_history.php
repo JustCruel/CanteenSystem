@@ -96,6 +96,7 @@ $result = $conn->query($query);
                 <th>User Name</th>
                 <th>Transaction Type</th>
                 <th>Amount</th>
+                <th>Loader</th>
                 <th>Transaction Date</th>
             </tr>
         </thead>
@@ -108,6 +109,7 @@ $result = $conn->query($query);
                         <td><?php echo htmlspecialchars($row['user_name']); ?></td>
                         <td><?php echo htmlspecialchars(ucfirst($row['transaction_type'])); ?></td>
                         <td>P<?php echo number_format($row['amount'], 2); ?></td>
+                        <td><?php echo $row['cashier']; ?></td>
                         <td><?php echo $row['transaction_date']; ?></td>
                     </tr>
                 <?php endwhile; ?>

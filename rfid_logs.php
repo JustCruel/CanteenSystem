@@ -16,7 +16,7 @@ $entriesPerPage = 10;
 $offset = ($page - 1) * $entriesPerPage;
 
 // Build the SQL query with pagination and filter
-$sql = "SELECT rfid_code, user_name, action, action_time, user_id FROM rfid_history";
+$sql = "SELECT rfid_code, user_name, action, action_time, user_id, modified FROM rfid_history";
 if ($actionFilter !== 'All') {
     $sql .= " WHERE action = '$actionFilter'";
 }
@@ -89,6 +89,7 @@ $totalPages = ceil($totalEntries / $entriesPerPage);
                         <th>Action</th>
                         <th>Action Time</th>
                         <th>User ID</th>
+                        <th>Modified By</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,6 +103,7 @@ $totalPages = ceil($totalEntries / $entriesPerPage);
                             echo "<td>" . htmlspecialchars($row["action"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["action_time"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["user_id"]) . "</td>";
+                            echo "<td>" . htmlspecialchars($row["modified"]) . "</td>";
                             echo "</tr>";
                         }
                     } else {

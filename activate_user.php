@@ -1,9 +1,15 @@
 <?php
+session_start();
 include "db.php"; // Ensure to include your database connection
 
 header('Content-Type: application/json'); // Set the response type to JSON
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $first_name = $_SESSION['first_name'];
+    $middle_name = $_SESSION['middle_name'];
+    $last_name = $_SESSION['last_name'];
+    $fullname = $first_name . " " . $middle_name . " " . $last_name;
     // Validate input for security
     if (isset($_POST['rfid_code']) && !empty($_POST['rfid_code'])) {
         $rfidCode = $_POST['rfid_code']; // Get the RFID code from the request
@@ -52,8 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($updateQuery->execute() === TRUE) {
         // Insert the log entry into rfid_history table
         $actionTime = date('Y-m-d H:i:s'); // Current timestamp
-        $logQuery = $conn->prepare("INSERT INTO rfid_history (rfid_code, user_name, action, action_time, user_id) VALUES (?, ?, ?, ?, ?)");
-        $logQuery->bind_param("ssssi", $rfidCode, $userName, $action, $actionTime, $userId); // Bind parameters
+        $logQuery = $conn->prepare("INSERT INTO rfid_history (rfid_code, user_name, action, action_time, user_id, modified) VALUES (?, ?, ?, ?, ?,?)");
+        $logQuery->bind_param("ssssis", $rfidCode, $userName, $action, $actionTime, $userId, $fullname); // Bind parameters
 
         if ($logQuery->execute() === TRUE) {
             echo json_encode(["status" => "success", "message" => "User with RFID $rfidCode activated successfully."]);

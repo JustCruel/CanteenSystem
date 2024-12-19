@@ -87,12 +87,10 @@ button:disabled {
     <div class="container mt-4">
         <h1 class="text-center">Student Records</h1>
         <div class="input-group mb-3">
-            <input type="text" id="searchBar" class="form-control" placeholder="Search for names...">
-            <div class="input-group-append">
-                <button class="btn btn-primary" onclick="searchStudents()">Search</button>
-            </div>
+        <input type="text" id="searchBar" class="form-control" placeholder="Search for names..." oninput="searchStudents()">
+   
         </div>
-        <h2 class="text-center">This Account is currently not activated</h2>
+     
         <!-- Waiting RFID Scan Textbox -->
         <div class="table-responsive">
             <table id="studentTable" class="table table-striped table-bordered">
@@ -470,29 +468,28 @@ function handleAction(rfidCode, action) {
     xhr.send("rfid_code=" + rfidCode);
 }
 
+function searchStudents() {
+        const input = document.getElementById('searchBar');
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById('studentTable');
+        const rows = table.getElementsByTagName('tr');
 
-        function searchStudents() {
-            const input = document.getElementById('searchBar');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('studentTable');
-            const rows = table.getElementsByTagName('tr');
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
 
-            for (let i = 1; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                let found = false;
-
-                for (let j = 0; j < cells.length; j++) {
-                    if (cells[j]) {
-                        const cellValue = cells[j].textContent || cells[j].innerText;
-                        if (cellValue.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellValue = cells[j].textContent || cells[j].innerText;
+                    if (cellValue.toLowerCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
                     }
                 }
-                rows[i].style.display = found ? "" : "none"; 
             }
+            rows[i].style.display = found ? "" : "none"; 
         }
+    }
     </script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
