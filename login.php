@@ -71,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         function togglePasswordVisibility() {
@@ -92,17 +93,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Check if login was successful
             // Check if login was successful
-<?php if ($login_success): ?>
-    swal({
-        title: "Login Succesfully!",
-        text: " Welcome, <?php echo $_SESSION['first_name'], " ",$_SESSION['middle_name'], " ",$_SESSION['last_name']; ?>!",
+            <?php if ($login_success): ?>
+    Swal.fire({ 
         icon: "success",
-        timer: 2000,
-        buttons: false,
-    }, function() {
+        text: " Welcome, <?php echo $_SESSION['first_name'], ' ', $_SESSION['middle_name'], ' ', $_SESSION['last_name']; ?>!",
+        showConfirmButton: false,
+        timer: 1500
+    }).then(() => {
         window.location.href = "<?php echo $redirect_url; ?>"; // Redirect after alert
     });
 <?php endif; ?>
+
 
         }
     </script>
