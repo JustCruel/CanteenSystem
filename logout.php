@@ -46,7 +46,7 @@ $role = isset($_SESSION['user_type']) ? $_SESSION['user_type'] : '';
                     case 'cashier':
                         window.location.href = 'cashierdashboard.php';
                         break;
-                    case 'users':
+                    case 'user':
                         window.location.href = 'usersdashboard.php';
                         break;
                     default:

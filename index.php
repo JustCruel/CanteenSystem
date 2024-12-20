@@ -435,7 +435,7 @@
 <div id="about-us" class="about-us" style="display: none;">
     <h2>About Us</h2>
     <p>
-    The Web-Based Canteen Management System at Holy Cross College Sta. Rosa N.E., Inc. aims to modernize and improve the efficiency of canteen operations, addressing the challenges posed by outdated manual processes. With a user-friendly interface and seamless transaction system, we seek to enhance the overall experience for both customers and staff. This system minimizes long wait times, reduces operational bottlenecks, and streamlines the ordering and payment process. By integrating technology into canteen services, we are committed to providing a smooth and enjoyable experience for all users, while also improving service quality, transaction accuracy, and operational efficiency.
+    The Web-Based Canteen Management System at Holy Cross College Sta. Rosa N.E., Inc. aims to modernize and improve the efficiency of canteen operations, addressing the challenges posed by outdated manual processes. With a user-friendly interface and seamless transaction system, we seek to enhance the overall experience for students,faculty members  and canteen staff. This system minimizes long wait times, reduces operational bottlenecks, and streamlines the ordering and payment process. By integrating technology into canteen services, we are committed to providing a smooth and enjoyable experience for all users, while also improving service quality, transaction accuracy, and operational efficiency.
     </p>
 </div>
 

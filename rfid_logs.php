@@ -98,8 +98,8 @@ $totalPages = ceil($totalEntries / $entriesPerPage);
                 <div class="col">
                     <select name="type" class="form-control" onchange="autoSubmit()">
                         <option value="">All Types</option>
-                        <option value="load" <?php echo $typeFilter == 'load' ? 'selected' : ''; ?>>Load</option>
-                        <option value="deduct" <?php echo $typeFilter == 'deduct' ? 'selected' : ''; ?>>Deduct</option>
+                        <option value="Activated" <?php echo $typeFilter == 'Activated' ? 'selected' : ''; ?>>Activated</option>
+                        <option value="Deactivated" <?php echo $typeFilter == 'Deactivated' ? 'selected' : ''; ?>>Deactvated</option>
                     </select>
                 </div>
                 <div class="col">
