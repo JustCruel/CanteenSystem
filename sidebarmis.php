@@ -246,10 +246,7 @@
         <a href="misdashboard.php">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a>
-        <a href="activate_card.php">
-            <i class="fas fa-tachometer-alt"></i> Activate RFID/Accounts
-        </a>
-        <!-- Inventory with Submenu -->
+          <!-- Inventory with Submenu -->
        <div class="menu-item">
             <a href="#inventorySubmenu" class="inventory-toggle" onclick="toggleSubmenu()">
                 <i class="fas fa-cogs"></i> Register <i class="fas fa-chevron-down submenu-icon"></i>
@@ -259,10 +256,12 @@
             <a href="registeractivate.php">Bulk Register</a>
             </div>
         </div> 
-      
-        <a href="registeractivate.php">
-            <i class="fas fa-file-invoice"></i>Upload Student/Faculty List
+        <a href="activate_card.php">
+            <i class="fas fa-tachometer-alt"></i> Activate RFID/Accounts
         </a>
+      
+      
+      
         <a href="rfid_logs.php">
             <i class="fas fa-file-invoice"></i>Activity Logs
         </a>

@@ -275,7 +275,55 @@
     margin-bottom: 20px; /* Adds spacing between paragraphs */
     text-align: center; /* Center aligns the text */
 }
+ .about-us {
+        width: 90%;
+        max-width: 1000px;
+        margin: 50px auto;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-align: center;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        line-height: 1.8;
+        font-size: 18px;
+        backdrop-filter: blur(5px);
+    }
 
+    .about-us h2 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 28px;
+        margin-bottom: 15px;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .about-us p {
+        margin-bottom: 20px;
+        color:white;
+    }
+
+    @media (max-width: 768px) {
+        .about-us {
+            padding: 30px;
+            font-size: 16px;
+        }
+
+        .about-us h2 {
+            font-size: 24px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .about-us {
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .about-us h2 {
+            font-size: 20px;
+        }
+    }
 
     @media (max-width: 768px) {
         .vision-mission {
@@ -367,39 +415,69 @@
         </div>
     </div>
 
-   <!-- Scroll Down Section -->
-   <div class="scroll-down">
-        <a href="javascript:void(0)" id="toggleButton">Vision & Mission</a>
-    </div>
+ <!-- Scroll Down Section -->
+<div class="scroll-down">
+    <a href="javascript:void(0)" id="toggleVisionButton">Vision & Mission</a>
+    <a href="javascript:void(0)" id="toggleAboutButton">About Us</a>
+</div>
 
-
-    <div id="vision-mission" class="vision-mission">
+<div id="vision-mission" class="vision-mission">
     <h2>Vision</h2>
     <p>
-        To be a pioneering canteen management system that delivers exceptional customer satisfaction and seamless transactions for Holy Cross College Sta. Rosa N.E. Inc.
+    To be a leading canteen management system that improves operational efficiency, enhances customer satisfaction, and fosters a seamless, enjoyable canteen experience for all users at Holy Cross College Sta. Rosa N.E. Inc.
     </p>
     <h2>Mission</h2>
     <p>
-        To provide innovative and efficient solutions that enhance the canteen experience through fast payments, real-time inventory management, and comprehensive reports. We aim to foster a collaborative and user-friendly environment for students, staff, and the entire school community.
+    To provide innovative and efficient solutions that modernize canteen operations, streamline payments through cashless systems, enable real-time inventory tracking, and generate comprehensive reports. Our mission is to create a user-friendly platform that improves service delivery for students, canteen staff, and faculty members, ensuring a smoother and more efficient canteen experience.
     </p>
 </div>
 
-    <script>
-        // JavaScript to toggle the Vision and Mission section
-        const toggleButton = document.getElementById('toggleButton');
-        const visionMission = document.getElementById('vision-mission');
+<div id="about-us" class="about-us" style="display: none;">
+    <h2>About Us</h2>
+    <p>
+    The Web-Based Canteen Management System at Holy Cross College Sta. Rosa N.E., Inc. aims to modernize and improve the efficiency of canteen operations, addressing the challenges posed by outdated manual processes. With a user-friendly interface and seamless transaction system, we seek to enhance the overall experience for both customers and staff. This system minimizes long wait times, reduces operational bottlenecks, and streamlines the ordering and payment process. By integrating technology into canteen services, we are committed to providing a smooth and enjoyable experience for all users, while also improving service quality, transaction accuracy, and operational efficiency.
+    </p>
+</div>
 
-        toggleButton.addEventListener('click', () => {
-            // Toggle the display of the Vision and Mission section
-            if (visionMission.style.display === 'none' || visionMission.style.display === '') {
-                visionMission.style.display = 'block';
-                toggleButton.textContent = 'Hide Vision & Mission'; // Update button text
-                visionMission.scrollIntoView({ behavior: 'smooth' }); // Smooth scroll to section
-            } else {
-                visionMission.style.display = 'none';
-                toggleButton.textContent = 'Vision & Mission'; // Reset button text
-            }
-        });
-    </script>
+<script>
+    // JavaScript to toggle the Vision and Mission section
+    const toggleVisionButton = document.getElementById('toggleVisionButton');
+    const visionMission = document.getElementById('vision-mission');
+    const toggleAboutButton = document.getElementById('toggleAboutButton');
+    const aboutUs = document.getElementById('about-us');
+
+    toggleVisionButton.addEventListener('click', () => {
+        // Toggle the Vision and Mission section
+        if (visionMission.style.display === 'none' || visionMission.style.display === '') {
+            visionMission.style.display = 'block';
+            toggleVisionButton.textContent = 'Hide Vision & Mission'; // Update button text
+            visionMission.scrollIntoView({ behavior: 'smooth' }); // Smooth scroll to section
+
+            // Hide About Us section if open
+            aboutUs.style.display = 'none';
+            toggleAboutButton.textContent = 'About Us'; // Reset About Us button text
+        } else {
+            visionMission.style.display = 'none';
+            toggleVisionButton.textContent = 'Vision & Mission'; // Reset button text
+        }
+    });
+
+    toggleAboutButton.addEventListener('click', () => {
+        // Toggle the About Us section
+        if (aboutUs.style.display === 'none' || aboutUs.style.display === '') {
+            aboutUs.style.display = 'block';
+            toggleAboutButton.textContent = 'Hide About Us'; // Update button text
+            aboutUs.scrollIntoView({ behavior: 'smooth' }); // Smooth scroll to section
+
+            // Hide Vision and Mission section if open
+            visionMission.style.display = 'none';
+            toggleVisionButton.textContent = 'Vision & Mission'; // Reset Vision & Mission button text
+        } else {
+            aboutUs.style.display = 'none';
+            toggleAboutButton.textContent = 'About Us'; // Reset button text
+        }
+    });
+</script>
+
 </body>
 </html>

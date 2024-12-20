@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Port = 587;
 
             // Recipients
-            $mail->setFrom('jemusu96@gmail.com', 'Your Company Name'); // Sender
+            $mail->setFrom('jemusu96@gmail.com', 'HCC Canteen Management System'); // Sender
             $mail->addAddress($userEmail, $userName); // Add the recipient
 
             // Content

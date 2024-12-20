@@ -132,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <br> 
             <br>
-            <a class="home" href="homepage.php">Homepage</a>
+            <a class="home" href="index.php">Homepage</a>
         </form>
     </div>
 </body>

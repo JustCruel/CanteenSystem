@@ -143,11 +143,111 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="file" class="form-control" id="image" name="image" accept="image/*">
             <img src="assets/images/<?php echo htmlspecialchars($product['image']); ?>" alt="Current Image" class="img-thumbnail mt-2" width="150">
         </div>
-        <button type="submit" class="btn btn-primary">Update Product</button>
+        <button type="submit" class="btn btn-primary" id="submitButton">Update Product</button>
     </form>
 </div>
 
 <script>
+    
+document.addEventListener('DOMContentLoaded', function() {
+            const sellingPriceInput = document.getElementById('selling_price');
+            const marketPriceInput = document.getElementById('market_price');
+            const submitButton = document.getElementById('submitButton');
+            let alertShown = false; // Flag to track if the message has been shown
+
+            if (sellingPriceInput && marketPriceInput) {
+                // Function to disable the submit button
+                function disableSubmitButton() {
+                    submitButton.disabled = true;
+                }
+
+                // Function to enable the submit button
+                function enableSubmitButton() {
+                    submitButton.disabled = false;
+                }
+
+                // Check when the input loses focus
+                sellingPriceInput.addEventListener('blur', function() {
+                    const selling_price = parseFloat(this.value); // Parse the selling price as a float
+                    const market_price = parseFloat(marketPriceInput.value); // Get the market price value
+
+                    // Remove any existing message spans
+                    const existingMessages = document.querySelectorAll('.price-message');
+                    existingMessages.forEach(function(message) {
+                        message.remove();
+                    });
+
+                    // Create a new span element for the message
+                    const messageSpan = document.createElement('span');
+                    messageSpan.classList.add('price-message'); // Add a class for styling purposes
+                    messageSpan.style.color = 'red'; // Style the message span (optional)
+
+                    // Check if selling price is less than market price
+                    if (selling_price < market_price) {
+                        messageSpan.textContent = 'Selling price cannot be less than the market price!';
+                        marketPriceInput.insertAdjacentElement('afterend', messageSpan); // Add message after market price
+                        sellingPriceInput.insertAdjacentElement('afterend', messageSpan.cloneNode(true)); // Duplicate message below selling price
+                        disableSubmitButton(); // Disable the button when an error is shown
+                    } 
+                    // Check if selling price is equal to market price
+                    else if (selling_price === market_price) {
+                        messageSpan.textContent = 'Selling price is equal to the market price!';
+                        marketPriceInput.insertAdjacentElement('afterend', messageSpan); // Add message after market price
+                        sellingPriceInput.insertAdjacentElement('afterend', messageSpan.cloneNode(true)); // Duplicate message below selling price
+                        disableSubmitButton(); // Disable the button when a message is shown
+                    } else {
+                        enableSubmitButton(); // Enable the button if there are no errors
+                    }
+                });
+
+                // Enable the button on input change to remove any error
+                sellingPriceInput.addEventListener('input', function() {
+                    const selling_price = parseFloat(this.value); 
+                    const market_price = parseFloat(marketPriceInput.value);
+                    if (selling_price >= market_price) {
+                        enableSubmitButton(); // Enable button when prices are valid
+                    }
+                });
+
+                marketPriceInput.addEventListener('blur', function() {
+                    const selling_price = parseFloat(sellingPriceInput.value);
+                    const market_price = parseFloat(this.value);
+
+                    // Remove any existing message spans
+                    const existingMessages = document.querySelectorAll('.price-message');
+                    existingMessages.forEach(function(message) {
+                        message.remove();
+                    });
+
+                    // Create a new span element for the message
+                    const messageSpan = document.createElement('span');
+                    messageSpan.classList.add('price-message'); // Add a class for styling purposes
+                    messageSpan.style.color = 'red'; // Style the message span (optional)
+
+                    // Check if selling price is less than market price
+                    if (selling_price < market_price) {
+                        messageSpan.textContent = 'Selling price cannot be less than the market price!';
+                        marketPriceInput.insertAdjacentElement('afterend', messageSpan); // Add message after market price
+                        sellingPriceInput.insertAdjacentElement('afterend', messageSpan.cloneNode(true)); // Duplicate message below selling price
+                        disableSubmitButton(); // Disable the button when an error is shown
+                    } 
+                    // Check if selling price is equal to market price
+                    else if (selling_price === market_price) {
+                        messageSpan.textContent = 'Selling price is equal to the market price!';
+                        marketPriceInput.insertAdjacentElement('afterend', messageSpan); // Add message after market price
+                        sellingPriceInput.insertAdjacentElement('afterend', messageSpan.cloneNode(true)); // Duplicate message below selling price
+                        disableSubmitButton(); // Disable the button when a message is shown
+                    } else {
+                        enableSubmitButton(); // Enable the button if there are no errors
+                    }
+                });
+            } else {
+                console.error("Element(s) not found");
+            }
+        });
+
+
+
     // Attach a submit event to the form
     document.getElementById('editForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the form from submitting immediately
