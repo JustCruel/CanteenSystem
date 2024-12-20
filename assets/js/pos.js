@@ -4,6 +4,7 @@ let products = [];
         window.onload = function() {
             fetchCategories();
             fetchAllProducts();
+            updateCart();
         };
 
     // Fetch products from the server
@@ -178,7 +179,17 @@ function displayProducts(productsToShow) {
     });
 }
 
+function updateCart() {
+    const cartItems = document.getElementById('cart-items');
+    const cancelOrderBtn = document.getElementById('cancel-order-btn');
 
+    // Check if there are any items in the cart
+    if (cartItems.children.length === 0) {
+        cancelOrderBtn.disabled = true; // Disable the button
+    } else {
+        cancelOrderBtn.disabled = false; // Enable the button
+    }
+}
 
          // Add to cart function
         function addToCart(id, name, price, stock) {
@@ -206,6 +217,7 @@ function displayProducts(productsToShow) {
                 }
             }
             renderCart();
+            updateCart();
         }
 
 function increaseQuantity(id) {
@@ -341,6 +353,7 @@ function decreaseQuantity(id) {
             if (result.isConfirmed) {
                 cart = cart.filter(cartItem => cartItem.id !== id);
                 renderCart();
+                updateCart();
             }
         });
     }
@@ -354,15 +367,7 @@ function decreaseQuantity(id) {
       // Confirm Sale
 // Confirm Salefunction 
 function confirmSale() {
-    if (rfidInput === '0') {
-        Swal.fire({
-            title: 'Alert!',
-            text: 'RFID is not activated. Please activate RFID to proceed.',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-        });
-        return; // Stop further processing
-    }
+   
     if (cart.length === 0) {
         Swal.fire({
             icon: 'warning',

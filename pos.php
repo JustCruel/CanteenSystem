@@ -198,7 +198,8 @@ if (!isset($_SESSION['user_id'])) {
         <div class="checkout-actions mt-3">
         <div id="total-amount" class="fw-bold">Total: ₱0</div>
             <button class="btn btn-success btn-block" onclick="confirmSale()">Place Order</button>
-            <button class="btn btn-danger btn-block" onclick="confirmCancelOrder()">Cancel Order</button>
+            <button id="cancel-order-btn" class="btn btn-danger btn-block" onclick="confirmCancelOrder()">Cancel Order</button>
+
             <input type="text" id="barcode-input" placeholder="Scan barcode here..." autofocus class="form-control mb-3">
                 
             <input type="text" id="rfid-input" class="form-control mt-3" placeholder="Scan RFID" />
@@ -408,6 +409,10 @@ function openReturnSaleModal() {
          }
          });
         }
+
+      
+
+
 
     </script>
 </body>

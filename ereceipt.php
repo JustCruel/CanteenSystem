@@ -132,20 +132,6 @@ $totalPages = ceil($totalReceipts / $limit); // Calculate total pages
         .modal-title {
             color: #007bff;
         }
-        .transaction-id-label {
-    color: #023B87;
-}
-
-
-        @media (max-width: 576px) {
-            .receipt-card {
-                padding: 15px;
-            }
-
-            .pagination .page-link {
-                font-size: 14px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -163,9 +149,9 @@ $totalPages = ceil($totalReceipts / $limit); // Calculate total pages
                 }
 
                 foreach ($groupedReceipts as $receiptId => $items): ?>
-                    <div class="receipt-card" data-receipt-id="<?php echo $receiptId; ?>">
-                    <div><strong class="transaction-id-label">Transaction ID:</strong> <?php echo htmlspecialchars($items[0]['transaction_number']); ?></div>
-                        <div><strong>Date:</strong> <?php echo date('d-M-Y H:i:s', strtotime($items[0]['sale_date'])); ?></div>
+                    <div class="receipt-card" data-transaction-number="<?php echo htmlspecialchars($items[0]['transaction_number']); ?>" sale_date="<?php echo date('d-M-Y H:i:s', strtotime($items[0]['sale_date'])); ?>">
+                        <div><strong class="transaction-id-label">Transaction ID:</strong>  <?php echo htmlspecialchars($items[0]['transaction_number']); ?></div>
+                        <div><strong>Date:</strong> <?php echo htmlspecialchars(date('d-M-Y H:i:s', strtotime($items[0]['sale_date']))); ?></div>
                         <div><strong>Total Amount:</strong> ₱<?php echo number_format($items[0]['total_amount'], 2); ?></div>
                     </div>
                 <?php endforeach; ?>
@@ -211,44 +197,61 @@ $totalPages = ceil($totalReceipts / $limit); // Calculate total pages
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.querySelectorAll('.receipt-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const receiptId = this.getAttribute('data-receipt-id');
+      document.querySelectorAll('.receipt-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const transaction_number = this.getAttribute('data-transaction-number');
+        const sale_date = this.getAttribute('sale_date');
 
-                fetch('get_transaction_details.php?receipt_id=' + receiptId)
-                    .then(response => response.json())
-                    .then(data => {
-                        const receiptDetails = `
-                            <p><strong>Transaction ID:</strong> ${data.transaction_number}</p>
-                            <p><strong>Date:</strong> ${data.sale_date}</p>
-                            <p><strong>Total Amount:</strong> ₱${parseFloat(data.total_amount).toFixed(2)}</p>
-                            <h5>Purchased Products:</h5>
-                            <table class="table table-bordered">
-                                <thead>
+        if (!transaction_number) {
+            console.error('Transaction number is missing.');
+            return;
+        }
+
+        fetch('get_transaction_details.php?transaction_number=' + transaction_number)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.products) {
+                    const receiptDetails = `
+                        <p><strong>Transaction ID:</strong> ${transaction_number}</p>
+                        <p><strong>Date:</strong> ${sale_date}</p>
+                        <p><strong>Total Amount:</strong> ₱${parseFloat(data.total_amount).toFixed(2)}</p>
+                        <h5>Purchased Products:</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.products.map(product => `
                                     <tr>
-                                        <th>Product Name</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
+                                        <td>${product.product_name}</td>
+                                        <td>${product.quantity_sold}</td>
+                                        <td>₱${parseFloat(product.total).toFixed(2)}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.products.map(product => `
-                                        <tr>
-                                            <td>${product.product_name}</td>
-                                            <td>${product.quantity_sold}</td>
-                                            <td>₱${parseFloat(product.total).toFixed(2)}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>`;
+                                `).join('')}
+                            </tbody>
+                        </table>`;
 
-                        document.getElementById('receipt-details').innerHTML = receiptDetails;
-                        const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
-                        receiptModal.show();
-                    });
-            });
-        });
+                    document.getElementById('receipt-details').innerHTML = receiptDetails;
+                    const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
+                    receiptModal.show();
+                } else {
+                    console.error('Invalid data structure returned.');
+                }
+            })
+            .catch(error => console.error('Error fetching transaction details:', error));
+    });
+});
+
+
     </script>
 </body>
 </html>
-

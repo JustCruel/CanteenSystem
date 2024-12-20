@@ -7,32 +7,46 @@ if (!isset($_GET['transaction_number']) || empty($_GET['transaction_number'])) {
     exit();
 }
 
-$transactionNumber = $_GET['transaction_number'];
+$transaction_number = $_GET['transaction_number'];
+$response = [];
 
-// Fetch the transaction details based on the transaction number with quantity_sold > 0
-$sql = "SELECT p.id AS product_id, p.name AS product_name, SUM(ed.quantity_sold) AS quantity
-        FROM e_receipt_details ed
-        JOIN products p ON ed.product_id = p.id
-        JOIN e_receipts er ON er.transaction_number = ? 
-        WHERE ed.e_receipt_id = er.id
-        GROUP BY p.id, p.name
-        HAVING quantity > 0";  // This filters out products with quantity sold 0
+// Fetch transaction details
+$transactionQuery = $conn->prepare("SELECT total_amount FROM e_receipts WHERE transaction_number = ?");
+$transactionQuery->bind_param("s", $transaction_number);
+$transactionQuery->execute();
+$transactionResult = $transactionQuery->get_result();
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param('s', $transactionNumber);  // 's' for string type if transaction_number is a string
-$stmt->execute();
-$result = $stmt->get_result();
+if ($transactionResult->num_rows > 0) {
+    $transactionData = $transactionResult->fetch_assoc();
 
-// Check if any products are found
-$products = [];
-while ($row = $result->fetch_assoc()) {
-    $products[] = $row;
-}
+    // Fetch product details
+    $productsQuery = $conn->prepare("
+        SELECT p.name AS product_name, erd.quantity_sold, erd.total
+        FROM e_receipt_details erd 
+        JOIN products p ON erd.product_id = p.id 
+        WHERE erd.e_receipt_id = (SELECT id FROM e_receipts WHERE transaction_number = ?)
+    ");
+    $productsQuery->bind_param("s", $transaction_number);
+    $productsQuery->execute();
+    $productsResult = $productsQuery->get_result();
 
-// Return the products as JSON
-if (!empty($products)) {
-    echo json_encode(['products' => $products, 'transaction_id' => $transactionNumber]);
+    $products = [];
+    while ($product = $productsResult->fetch_assoc()) {
+        $products[] = $product;
+    }
+
+    $response = [
+        'total_amount' => $transactionData['total_amount'],
+        'products' => $products
+    ];
 } else {
-    echo json_encode(['error' => 'No products found for this transaction.']);
+    // If no transaction found, return empty products
+    $response = [
+        'total_amount' => 0,
+        'products' => []
+    ];
 }
+
+echo json_encode($response);
+
 ?>

@@ -233,9 +233,7 @@
     <!-- Top bar -->
     <div class="top-bar">
         <h1>Holy Cross College CMS</h1>
-        <span class="hamburger" id="hamburger" onclick="toggleSidebar()">
-            <i class="fas fa-bars"></i>
-        </span>
+       
         <a href="logout.php" class="logout-btn">
             <i class="fas fa-sign-out-alt"></i> Logout
         </a>

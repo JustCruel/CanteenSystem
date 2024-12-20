@@ -66,7 +66,7 @@ $result = $conn->query($query);
 <body>
 
 <?php include 'sidebarcash.php'; ?>
-<div class="container mt-5">
+<div class="main-content">
     <h1 class="text-center">Transaction History</h1>
 
     <!-- Filter Form -->

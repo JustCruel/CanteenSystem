@@ -3,92 +3,403 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link sa iyong CSS file -->
+    <title>CMS Homepage</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
     <style>
-        /* Additional styles to hide content initially */
-        .content-section {
-            display: none; /* Hide all sections by default */
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('assets/images/canteen.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
         }
-        /* Keep this section visible by default */
-        #home-dashboard {
-            display: block; /* Show home dashboard by default */
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(64, 224, 208, 0.8), rgba(75, 0, 130, 0.6), rgba(255, 20, 147, 0.6));
+            z-index: -1;
+            filter: blur(3px);
+            animation: animateBg 10s infinite alternate;
         }
+
+        @keyframes animateBg {
+            0% { filter: blur(3px); }
+            100% { filter: blur(5px); }
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: flex-end;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .login-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .login-button:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: white;
+            border-color: white;
+            transform: scale(1.05);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .main-message {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 60px;
+            font-size: 44px;
+            text-align: center;
+            color: white;
+            font-weight: bold; 
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+            max-width: 80%;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: slideIn 1.5s ease-in-out, pulse 3s infinite;
+            margin-top: 150px;
+        }
+
+        .sub-message {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            font-weight: bold; 
+            margin-top: 20px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 0 20px;
+            width: 200px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-box img {
+            width: 100px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .feature-box p {
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 1024px) { /* Tablets and smaller screens */
+            .navbar {
+                padding: 15px 30px;
+            }
+
+            .main-message {
+                font-size: 36px;
+                padding: 40px;
+                margin-top: 100px;
+            }
+
+            .sub-message {
+                font-size: 18px;
+            }
+
+            .login-button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+
+            .feature-box {
+                width: 160px;
+                padding: 15px;
+            }
+
+            .feature-box img {
+                width: 90px;
+                height: 70px;
+            }
+        }
+
+        @media (max-width: 768px) { /* Smartphones */
+            .navbar {
+                padding: 10px 20px;
+            }
+
+            .main-message {
+                font-size: 30px;
+                padding: 30px;
+                margin-top: 80px;
+            }
+
+            .sub-message {
+                font-size: 16px;
+            }
+
+            .login-button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .features {
+                flex-direction: column;
+            }
+
+            .feature-box {
+                width: 160px;
+                padding: 12px;
+            }
+
+            .feature-box img {
+                width: 80px;
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 480px) { /* Small screens like small phones */
+            .main-message {
+                font-size: 24px;
+                padding: 20px;
+                margin-top: 60px;
+            }
+
+            .sub-message {
+                font-size: 14px;
+            }
+
+            .login-button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .feature-box {
+                width: 140px;
+                padding: 10px;
+            }
+
+            .feature-box img {
+                width: 70px;
+                height: 50px;
+            }
+        }
+           /* Existing Styles here... */
+
+           .vision-mission {
+        width: 90%;
+        max-width: 1000px;
+        margin: 50px auto;
+        padding: 40px;
+        background: linear-gradient(135deg, rgba(64, 224, 208, 0.8), rgba(75, 0, 130, 0.6), rgba(255, 20, 147, 0.6)); 
+        color: white;
+        text-align: center;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        line-height: 1.8;
+        font-size: 18px;
+        backdrop-filter: blur(5px);
+    }
+
+    .vision-mission h2 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 28px;
+        margin-bottom: 15px;
+        color: white; /* White color for headings */
+        text-transform: uppercase;
+    }
+
+    .vision-mission p {
+    color: white; /* Text color set to white */
+    font-size: 18px; /* Font size for readability */
+    line-height: 1.8; /* Adjusts line spacing for better readability */
+    margin-bottom: 20px; /* Adds spacing between paragraphs */
+    text-align: center; /* Center aligns the text */
+}
+
+
+    @media (max-width: 768px) {
+        .vision-mission {
+            padding: 30px;
+            font-size: 16px;
+        }
+
+        .vision-mission h2 {
+            font-size: 24px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .vision-mission {
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .vision-mission h2 {
+            font-size: 20px;
+        }
+    }
+
+        .scroll-down {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .scroll-down a {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .scroll-down a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .logo {
+    width: 50px; /* Adjust the size of the logo */
+    height: auto;
+    margin-right: 20px; /* Space between logo and login button */
+}
+
     </style>
 </head>
 <body>
-    <header>
-        User Dashboard
-    </header>
-    <div class="dashboard">
-        <div class="sidebar">
-            <ul>
-                <li><a href="#" class="sidebar-link" data-target="home-dashboard">Home Dashboard</a></li>
-                <li><a href="#" class="sidebar-link" data-target="user-profile">User Profile</a></li>
-                <li><a href="#" class="sidebar-link" data-target="load-balance">Load Balance</a></li>
-                <li><a href="#" class="sidebar-link" data-target="transaction-history">Transaction History</a></li>
-                <li><a href="#" class="sidebar-link" data-target="activity-logs">Activity Logs</a></li>
-                <li><a href="#" class="sidebar-link" data-target="total-spent">Total Spent</a></li>
-                <li><a href="#" class="sidebar-link" data-target="reports">Reports</a></li>
-                <li><a href="#" class="sidebar-link" data-target="logout">Log Out</a></li>
-            </ul>
+<div class="navbar">
+    <img src="assets/images/logo.png" alt="Logo" class="logo">
+    <a href="login.php" class="login-button">Log In</a>
+</div>
+
+<div class="navbar">
+        <a href="login.php" class="login-button">Log In</a>
+    </div>
+    <div class="main-message">Welcome To Canteen Management System</div>
+    <div class="sub-message">Effortlessly Manage Your Canteen Transactions</div>
+
+    <div class="features">
+        <div class="feature-box">
+            <img src="assets/images/Fastpayment.jpg" alt="Fast Payments">
+            <p>Fast Payments</p>
         </div>
-        <div class="container">
-            <main id="content">
-                <div id="home-dashboard" class="content-section">
-                    <h2>Welcome to Users Dashboard</h2>
-                    <p>This is your home dashboard content.</p>
-                </div>
-                <div id="user-profile" class="content-section">
-                    <h2>User Profile</h2>
-                    <p>This is your user profile content.</p>
-                </div>
-                <div id="load-balance" class="content-section">
-                    <h2>Load Balance</h2>
-                    <p>This is your load balance content.</p>
-                </div>
-                <div id="transaction-history" class="content-section">
-                    <h2>Transaction History</h2>
-                    <p>This is your transaction history content.</p>
-                </div>
-                <div id="activity-logs" class="content-section">
-                    <h2>Activity Logs</h2>
-                    <p>This is your activity logs content.</p>
-                </div>
-                <div id="total-spent" class="content-section">
-                    <h2>Total Spent</h2>
-                    <p>This is your total spent content.</p>
-                </div>
-                <div id="reports" class="content-section">
-                    <h2>Reports</h2>
-                    <p>This is your reports content.</p>
-                </div>
-            </main>
+        <div class="feature-box">
+            <img src="assets/images/Easy.jpg" alt="Order Tracking">
+            <p>Easy Order Tracking</p>
+        </div>
+        <div class="feature-box">
+            <img src="assets/images/Compre.jpg" alt="Reports">
+            <p>Comprehensive Reports</p>
         </div>
     </div>
 
+   <!-- Scroll Down Section -->
+   <div class="scroll-down">
+        <a href="javascript:void(0)" id="toggleButton">Vision & Mission</a>
+    </div>
+
+
+    <div id="vision-mission" class="vision-mission">
+    <h2>Vision</h2>
+    <p>
+        To be a pioneering canteen management system that delivers exceptional customer satisfaction and seamless transactions for Holy Cross College Sta. Rosa N.E. Inc.
+    </p>
+    <h2>Mission</h2>
+    <p>
+        To provide innovative and efficient solutions that enhance the canteen experience through fast payments, real-time inventory management, and comprehensive reports. We aim to foster a collaborative and user-friendly environment for students, staff, and the entire school community.
+    </p>
+</div>
+
     <script>
-        // Function to handle sidebar link clicks
-        const links = document.querySelectorAll('.sidebar-link');
-        const sections = document.querySelectorAll('.content-section');
+        // JavaScript to toggle the Vision and Mission section
+        const toggleButton = document.getElementById('toggleButton');
+        const visionMission = document.getElementById('vision-mission');
 
-        links.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault(); // Prevent default link behavior
-
-                // Hide all sections
-                sections.forEach(section => {
-                    section.style.display = 'none';
-                });
-
-                // Show the selected section
-                const target = this.getAttribute('data-target');
-                document.getElementById(target).style.display = 'block';
-            });
+        toggleButton.addEventListener('click', () => {
+            // Toggle the display of the Vision and Mission section
+            if (visionMission.style.display === 'none' || visionMission.style.display === '') {
+                visionMission.style.display = 'block';
+                toggleButton.textContent = 'Hide Vision & Mission'; // Update button text
+                visionMission.scrollIntoView({ behavior: 'smooth' }); // Smooth scroll to section
+            } else {
+                visionMission.style.display = 'none';
+                toggleButton.textContent = 'Vision & Mission'; // Reset button text
+            }
         });
-
-        // Show the home dashboard by default on page load
-        document.getElementById('home-dashboard').style.display = 'block';
     </script>
 </body>
 </html>

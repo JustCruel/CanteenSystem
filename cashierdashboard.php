@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 include "db.php";
-include "sidebarcash.php";
+
 
 $first_name = $_SESSION['first_name'];
 $middle_name = $_SESSION['middle_name'];
@@ -49,17 +49,66 @@ $datesJson = json_encode($loadDates);
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+         header.bg-primary {
+    background-color: #023B87 !important; /* Force primary blue */
+    color: #fff !important; /* Force white text */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+header .dropdown a {
+    color: #fff !important;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+header .dropdown a:hover {
+    color: #d1e7ff;
+}
+
+
+/* Tooltip customization */
+[data-toggle="tooltip"] {
+    cursor: pointer; /* Indicate interactivity */
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    header.bg-primary {
+        flex-direction: column; /* Stack elements */
+        text-align: center; /* Center-align text */
+    }
+
+    header .dropdown {
+        margin-top: 0.5rem; /* Add spacing for dropdown */
+    }
+}
+    </style>
 </head>
 <body class="bg-light">
-
-<div class="container mt-5">
-    <!-- Dashboard Header -->
-
-
-    <!-- Analytics Section -->
+<?php include "sidebarcash.php"; ?>
+<div class="main-content">
+<header class="bg-primary text-white p-4 rounded d-flex justify-content-between align-items-center">
+        <h1 class="m-0">CASHIER DASHBOARD</h1>
+        <div class="dropdown">
+            <a href="#" class="text-white" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-toggle="tooltip" data-placement="top" title="Profile Settings">
+              
+    </header>
     <div class="card mt-4">
         <div class="card-body">
-            <h3 class="text-center text-primary">Loading vs Deductions</h3>
+            <h3 class="text-center text-primary">Loading & Deductions</h3>
             <div id="analyticsChart"></div>
         </div>
     </div>

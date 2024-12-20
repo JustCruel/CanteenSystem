@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
     $product_id = $_GET['id'];
 
     // Fetch product details by ID
-    $query = "SELECT id, name, quantity, image, expiry_date, market_price, selling_price, category FROM products WHERE id = ?";
+    $query = "SELECT id, barcode, name, quantity, image, expiry_date, market_price, selling_price, category FROM products WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
@@ -95,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-include 'sidebar.php'; // Include sidebar
+ // Include sidebar
 ?>
 
 <!DOCTYPE html>
@@ -109,10 +109,15 @@ include 'sidebar.php'; // Include sidebar
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<div class="container mt-5">
+<?php include 'sidebar.php'; ?>
+<div class="main-content">
 <a href="inventory.php" class="btn btn-secondary">Back to Inventory</a>
     <h2>Edit Product: <?php echo htmlspecialchars($product['name']); ?></h2>
     <form id="editForm" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+            <label for="barcode" class="form-label">Barcode</label>
+            <input type="text" class="form-control" id="barcode" name="barcode" value="<?php echo htmlspecialchars($product['barcode']); ?>" required>
+        </div>
         <div class="mb-3">
             <label for="name" class="form-label">Product Name</label>
             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($product['name']); ?>" required>

@@ -6,6 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 include 'db.php';
+date_default_timezone_set('Asia/Manila'); // Set to your desired time zone
 
 // Get today's date
 $today = date('Y-m-d');
@@ -22,7 +23,7 @@ $yearEnd = date('Y-12-31');
 $sales = [];
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $filter = isset($_GET['filter']) ? $_GET['filter'] : '';
-
+/*
 // Base query for total return amount
 $returnBaseQuery = "SELECT SUM(products.selling_price * return_sale.quantity) AS total_return, return_date
                     FROM return_sale
@@ -71,7 +72,7 @@ if ($returnResult) {
 
 // Format the total return amount
 $totalReturnFormatted = number_format($totalReturn, 2);
-
+*/
 
 // Base query for total revenue
 $baseQuery = "SELECT SUM(selling_price * quantity_sold) AS total_revenue, sale_date
@@ -92,7 +93,8 @@ if (!empty($filter)) {
     $filterClause = "";
     switch ($filter) {
         case 'today':
-            $filterClause = "DATE(sale_date) = '$today'";
+            $filterClause = "DATE(CONVERT_TZ(sale_date, '+00:00', '+08:00')) = '$today'";
+
             break;
         case 'week':
             $filterClause = "sale_date BETWEEN '$weekStart' AND '$weekEnd'";
@@ -195,12 +197,7 @@ $revenueFormatted = number_format($revenue, 2);
         <h4>Total Revenue for <?php echo ucfirst($filter ?: 'all time'); ?>:</h4>
         <p>₱<?php echo $revenueFormatted; ?></p>
     </div>
-    <!-- Display total return -->
-<div class="revenue-card">
-    <h4>Total Returns for <?php echo ucfirst($filter ?: 'all time'); ?>:</h4>
-    <p>₱<?php echo $totalReturnFormatted; ?></p>
-</div>
-
+   
     <!-- ApexCharts for Revenue Graph -->
     <div id="revenue-chart"></div>
 

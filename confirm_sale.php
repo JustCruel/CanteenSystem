@@ -125,6 +125,9 @@ if ($paymentMethod === 'cash') {
         if ($user['is_activated'] == 0) {
             echo json_encode(["success" => false, "message" => "RFID is disabled. Please contact support."]);
             exit;
+        } elseif($user['is_activated'] == 2) {
+            echo json_encode(["success" => false, "message" => "RFID is deactivated. Please contact support."]);
+            exit;
         }
 
         $currentBalance = $user['balance'];

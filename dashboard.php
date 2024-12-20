@@ -20,6 +20,11 @@ $_SESSION['first_name'] = $userData['first_name'];
 $salesQuery = $conn->query("SELECT SUM(total) AS total_sales FROM sales");
 $totalSales = ($salesQuery->fetch_assoc())['total_sales'];
 
+// Fetch total sales today
+$salesTodayQuery = $conn->query("SELECT SUM(total) AS total_sales_today FROM sales WHERE DATE(sale_date) = CURDATE()");
+$totalSalesToday = ($salesTodayQuery->fetch_assoc())['total_sales_today'];
+$totalSalesToday = $totalSalesToday ?? 0; // Set to 0 if no sales today
+
 // Fetch total products
 $productsQuery = $conn->query("SELECT COUNT(*) AS total_products FROM products");
 $totalProducts = ($productsQuery->fetch_assoc())['total_products'];
@@ -232,6 +237,18 @@ while ($row = $categoriesQuery->fetch_assoc()) {
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+    <div class="card">
+        <div class="card-body">
+            <div class="card-icon text-danger">
+                <i class="fas fa-calendar-day fa-2x"></i>
+            </div>
+            <h5 class="card-title">Sales Today</h5>
+            <p class="card-text">₱<?php echo number_format($totalSalesToday, 2); ?></p>
+        </div>
+    </div>
+</div>
+
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">

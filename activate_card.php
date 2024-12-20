@@ -84,7 +84,7 @@ button:disabled {
     </style>
 </head>
 <body>
-    <div class="container mt-4">
+    <div class="main-content">
         <h1 class="text-center">Student Records</h1>
         <div class="input-group mb-3">
         <input type="text" id="searchBar" class="form-control" placeholder="Search for names..." oninput="searchStudents()">
