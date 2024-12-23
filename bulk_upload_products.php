@@ -83,7 +83,7 @@ if (isset($_SESSION['uploadedData'])) {
 <body class="bg-light">
     <?php include 'sidebar.php'; ?>
    
-<div class="container mt-5">
+<div class="main-content">
     <h3 class="text-center">Upload and Preview Excel File</h3>
     <form method="post" enctype="multipart/form-data">
         <div class="mb-3">

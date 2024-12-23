@@ -135,7 +135,7 @@ if (!isset($_SESSION['user_id'])) {
 
 #barcode-input {
             position: absolute;
-            top: -9999px;
+            top: 1px;
         }
 
     </style>
@@ -145,7 +145,7 @@ if (!isset($_SESSION['user_id'])) {
     <div class="top-bar navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand logo" href="#">
-                <h1>POS System</h1>
+                <h1>Canteen Point of Sale</h1>
             </a>
             <div class="top-bar-right">
                 <a href="logout.php" class="btn btn-outline-light logout-btn">Logout</a>
