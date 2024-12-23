@@ -539,7 +539,13 @@ function completeSaleWithCash() {
                             xhrPrint.onload = function() {
                                 if (this.status === 200) {
                                     console.log("Receipt printed successfully!");
+
+                                    // Now that the receipt has been printed, clear the cart
+                                    cart = []; // Clear the cart
+                                    renderCart(); // Update the cart UI
+                                    calculateTotal(); // Reset the total amount
                                     location.reload();
+
                                 } else {
                                     console.error("Failed to print receipt.");
                                 }
@@ -552,10 +558,10 @@ function completeSaleWithCash() {
                                 change: change,
                                 transaction_number: response.transaction_number // Include transaction number
                             }));
+                            
                         });
-                        cart = []; // Clear the cart after confirming
-                        renderCart();
-                        calculateTotal(); // Reset total
+                       
+                        
                     } else {
                         Swal.fire({
                             icon: 'error',
